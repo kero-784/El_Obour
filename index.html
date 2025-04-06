@@ -507,9 +507,9 @@
 
              //if (storedDatabase) database = JSON.parse(storedDatabase); // No longer load database from local storage
             if (storedEnteredRecords) enteredRecords = JSON.parse(storedEnteredRecords);
-            if (storedHeaderMap) headerMap = JSON.parse(storedHeaderMap);
+            if (storedHeaderMap) headerMap = JSON.parse(headerMap);
             if (storedBarcodeHeader) barcodeHeader = storedBarcodeHeader;
-             if(storedNameHeader) nameHeader = storedNameHeader;
+             if(storedNameHeader) nameHeader = nameHeader;
               if(!storedCurrentDate){
                     localStorage.setItem('currentDate', getCurrentDateTime());
                     storedCurrentDate = localStorage.getItem('currentDate')
@@ -996,8 +996,18 @@
            }
          });
 
-        // Function for individual Save Entry - REMOVED as per request
-        // function saveSingleEntry(entryDiv) { ... }
+        // Automatic Search Trigger on Enter Key
+        searchBarcodeInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchButton.click();
+            }
+        });
+
+        // Automatic Focus on Search Input on Page Load
+        window.addEventListener('load', function() {
+            searchBarcodeInput.focus();
+        });
     </script>
 </body>
 </html>
