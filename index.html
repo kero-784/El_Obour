@@ -48,15 +48,22 @@
         /* New styles for camera preview and scan button */
         #cameraPreview {
             display: none; /* Hidden by default */
-            max-width: 320px; /* Adjust as needed */
-            max-height: 240px;
+            max-width: 100%; /* Take full width of container */
+            max-height: 300px; /* Adjust as needed */
             margin: 16px auto;
             border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block; /* Ensure video is block level to take full width */
         }
         #scanBarcodeButton {
             margin-top: 10px; /* Add some space above the button */
+            width: 100%; /* Make button full width for better tap area on mobile */
+            padding: 12px 16px; /* Slightly larger padding */
+            font-size: 1rem; /* Slightly larger font */
         }
-
+         #searchBarcodeInput {
+            margin-bottom: 12px; /* Add some space below the input */
+        }
     </style>
 
     <!-- Firebase SDK -->
@@ -81,10 +88,10 @@
 
         <section class="database-section-container">
             <h2>Search Inventory</h2>
-            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px;">
+            <div style="display: flex; flex-direction: column; align-items: stretch; margin-bottom: 20px;">
                 <input type="text" id="searchBarcodeInput" placeholder="Enter Barcode to Search">
                 <button id="searchButton" disabled><span class="material-icons">search</span>Search</button>
-                <!-- New "Scan Barcode" Button -->
+                <!-- New "Scan Barcode" Button - Full Width and larger -->
                 <button id="scanBarcodeButton" type="button"><span class="material-icons">camera_alt</span>Scan Barcode</button>
             </div>
              <!-- Video element for camera preview (initially hidden) -->
@@ -508,7 +515,7 @@
 
         // --- Barcode Scanning Functionality ---
         scanBarcodeButton.addEventListener('click', function() {
-            // Disable search button and focus input while scanning
+            // Disable search button and input while scanning
             searchButton.disabled = true;
             searchBarcodeInput.disabled = true;
             searchBarcodeInput.blur(); // Remove focus from input
@@ -520,7 +527,40 @@
             } else {
                 startLiveScanning();
             }
+             // Change button text and icon while scanning
+            scanBarcodeButton.innerHTML = '<span class="material-icons">stop</span>Stop Scan';
+            scanBarcodeButton.onclick = stopScanning; // Change button action to stop
         });
+
+        function stopScanning() {
+            Quagga.stop();
+            cameraPreview.style.display = 'none';
+            searchButton.disabled = false;
+            searchBarcodeInput.disabled = false;
+            searchBarcodeInput.focus();
+
+            // Revert button text and icon back to Scan Barcode
+            scanBarcodeButton.innerHTML = '<span class="material-icons">camera_alt</span>Scan Barcode';
+            scanBarcodeButton.onclick = startScanButtonAction; // Change button action back to start
+        }
+
+        // Store the original scan button action for easy reset
+        const startScanButtonAction = function() {
+            searchButton.disabled = true;
+            searchBarcodeInput.disabled = true;
+            searchBarcodeInput.blur();
+
+            if (Quagga.initialized) {
+                Quagga.start();
+                cameraPreview.style.display = 'block';
+            } else {
+                startLiveScanning();
+            }
+             scanBarcodeButton.innerHTML = '<span class="material-icons">stop</span>Stop Scan';
+            scanBarcodeButton.onclick = stopScanning;
+        };
+        scanBarcodeButton.onclick = startScanButtonAction; // Set initial action
+
 
         function startLiveScanning() {
             Quagga.init({
@@ -534,38 +574,36 @@
                         height: { ideal: 720 }, // Ideal height
                         aspectRatio: { ideal: 16/9 } // Ideal aspect ratio
                     },
-                    area: { // Define a smaller scanning area for focus (optional, adjust as needed)
-                        top: "20%",    // Top boundary of the detection area
-                        right: "20%",  // Right boundary
-                        left: "20%",   // Left boundary
-                        bottom: "20%"  // Bottom boundary
+                    area: { // Define a scanning area to focus (adjust as needed)
+                        top: "10%",    // Top boundary of the detection area
+                        right: "10%",  // Right boundary
+                        left: "10%",   // Left boundary
+                        bottom: "10%"  // Bottom boundary, making it a smaller square in the center
                     },
                     retry: true,            // Retry if stream fails
-                    frequency: 10          // Check stream every 10ms
+                    frequency: 30,          // Check stream more frequently for faster detection
+                    target: cameraPreview, // The DOM element to display the stream
                 },
                 decoder: {
                     readers: [ "ean_reader", "code_128_reader", "code_39_reader", "upc_reader", "upc_e_reader" ]
                 },
                 locator: {
                     halfSample: true,
-                    patchSize: "medium"
-                    // --- Optional: More aggressive locator settings (if needed) ---
-                    // halfSample: false,
-                    // patchSize: "large",
-                    // debug: {
-                    //     showCanvas: false,
-                    //     showPatches: false,
-                    //     showFoundPatches: false,
-                    //     showSkeleton: false,
-                    //     showLabels: false,
-                    //     showPatchLabels: false,
-                    //     showRemainingPatchLabels: false,
-                    //     box: false,
-                    //     boxes: false,
-                    //     patches: false,
-                    //     singleChannel: false
-                    // }
-                }
+                    patchSize: "medium",
+                    debug: {
+                        showCanvas: true,        // Show canvas for debugging (can be removed in production)
+                        showPatches: false,
+                        showFoundPatches: false,
+                        showSkeleton: false,
+                        showLabels: false,
+                        showPatchLabels: false,
+                        showRemainingPatchLabels: false,
+                        box: true,             // Show box around detected area
+                        boxes: true,           // Show boxes around possible barcodes
+                        patches: false,
+                        singleChannel: false
+                    }
+                },
             }, function(err) {
                 if (err) {
                     console.error("QuaggaJS initialization error:", err);
@@ -574,6 +612,7 @@
                     searchButton.disabled = false;
                     searchBarcodeInput.disabled = false;
                     cameraPreview.style.display = 'none'; // Ensure camera preview is hidden
+                    stopScanning(); // Reset scan button state
                     return;
                 }
                 Quagga.initialized = true;
@@ -583,10 +622,11 @@
         }
 
         Quagga.onDetected(function(data){
-            Quagga.stop();                  // Stop scanning after detection
+            Quagga.stop();                  // Stop scanning immediately after detection
             cameraPreview.style.display = 'none'; // Hide camera preview
             searchBarcodeInput.value = data.codeResult.code; // Populate input
             searchButton.click();           // Trigger search
+            stopScanning(); // Reset scan button state
 
             // Re-enable search button and input after scan (even if search fails or no item found)
             searchButton.disabled = false;
@@ -598,22 +638,23 @@
             var drawingCtx = Quagga.canvas.ctx.overlay;
             var drawingCanvas = Quagga.canvas.overlay;
 
+            drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height"))); // Clear overlay on each frame
+
             if (result) {
                 if (result.boxes) {
-                    drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
                     result.boxes.filter(function (box) {
                         return box !== result.box;
                     }).forEach(function (box) {
-                        Quagga.ImageDebug.drawPath(box, { color: "teal", lineWidth: 2 }, drawingCtx);
+                        Quagga.ImageDebug.drawPath(box, { color: "teal", lineWidth: 2 }, drawingCtx); // Possible barcode areas
                     });
                 }
 
                 if (result.box) {
-                    Quagga.ImageDebug.drawPath(result.box, { color: "#00F5FF", lineWidth: 2 }, drawingCtx);
+                    Quagga.ImageDebug.drawPath(result.box, { color: "#00F5FF", lineWidth: 2 }, drawingCtx); // Active scanning area
                 }
 
                 if (result.codeResult && result.codeResult.code) {
-                    Quagga.ImageDebug.drawPath(result.line, { color: 'rgb(0,255,0)', lineWidth: 3 }, drawingCtx);
+                    Quagga.ImageDebug.drawPath(result.line, { color: 'rgb(0,255,0)', lineWidth: 3 }, drawingCtx); // Detected barcode line
                 }
             }
         });
