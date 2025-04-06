@@ -507,9 +507,23 @@
 
              //if (storedDatabase) database = JSON.parse(storedDatabase); // No longer load database from local storage
             if (storedEnteredRecords) enteredRecords = JSON.parse(storedEnteredRecords);
-            if (storedHeaderMap) headerMap = JSON.parse(headerMap);
+
+            if (storedHeaderMap) {
+                try {
+                    headerMap = JSON.parse(storedHeaderMap);
+                } catch (e) {
+                    console.warn("Error parsing stored headerMap from localStorage. Resetting headerMap to empty object.", e);
+                    headerMap = {}; // Initialize to empty object in case of parsing error
+                    // Optionally, you could also clear the corrupted localStorage item:
+                    // localStorage.removeItem('headerMap');
+                }
+            } else {
+                headerMap = {}; // Initialize to empty object if not found in localStorage
+            }
+
+
             if (storedBarcodeHeader) barcodeHeader = storedBarcodeHeader;
-             if(storedNameHeader) nameHeader = nameHeader;
+             if(storedNameHeader) nameHeader = storedNameHeader;
               if(!storedCurrentDate){
                     localStorage.setItem('currentDate', getCurrentDateTime());
                     storedCurrentDate = localStorage.getItem('currentDate')
