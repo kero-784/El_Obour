@@ -527,31 +527,58 @@
                 inputStream: {
                     name: "liveStream",
                     type: "LiveStream",
-                    target: cameraPreview,    // Pass the video element
-                    constraints: {              // Optional, but good to specify
-                        facingMode: "environment"  // Use rear camera if available
-                    }
+                    target: cameraPreview,
+                    constraints: {
+                        facingMode: "environment", // Attempt to get the rear camera
+                        width: { ideal: 1280 },  // Ideal width for better resolution
+                        height: { ideal: 720 }, // Ideal height
+                        aspectRatio: { ideal: 16/9 } // Ideal aspect ratio
+                    },
+                    area: { // Define a smaller scanning area for focus (optional, adjust as needed)
+                        top: "20%",    // Top boundary of the detection area
+                        right: "20%",  // Right boundary
+                        left: "20%",   // Left boundary
+                        bottom: "20%"  // Bottom boundary
+                    },
+                    retry: true,            // Retry if stream fails
+                    frequency: 10          // Check stream every 10ms
                 },
                 decoder: {
-                    readers: [ "ean_reader", "code_128_reader", "code_39_reader", "upc_reader", "upc_e_reader" ] // Add barcode formats you need
+                    readers: [ "ean_reader", "code_128_reader", "code_39_reader", "upc_reader", "upc_e_reader" ]
                 },
-                // Example locator/halfSample - can adjust if needed for performance/accuracy
                 locator: {
                     halfSample: true,
                     patchSize: "medium"
+                    // --- Optional: More aggressive locator settings (if needed) ---
+                    // halfSample: false,
+                    // patchSize: "large",
+                    // debug: {
+                    //     showCanvas: false,
+                    //     showPatches: false,
+                    //     showFoundPatches: false,
+                    //     showSkeleton: false,
+                    //     showLabels: false,
+                    //     showPatchLabels: false,
+                    //     showRemainingPatchLabels: false,
+                    //     box: false,
+                    //     boxes: false,
+                    //     patches: false,
+                    //     singleChannel: false
+                    // }
                 }
             }, function(err) {
                 if (err) {
                     console.error("QuaggaJS initialization error:", err);
-                    alert("Failed to initialize barcode scanner: " + err.message);
-                    // Re-enable search button and input on error
+                    alert("Failed to initialize barcode scanner: " + err.message + ". Please ensure you have camera permissions enabled for this site and try again.");
+                    // Re-enable buttons and input on error
                     searchButton.disabled = false;
                     searchBarcodeInput.disabled = false;
+                    cameraPreview.style.display = 'none'; // Ensure camera preview is hidden
                     return;
                 }
-                Quagga.initialized = true; // Mark as initialized
-                Quagga.start();             // Start Quagga after init
-                cameraPreview.style.display = 'block'; // Show camera preview
+                Quagga.initialized = true;
+                Quagga.start();
+                cameraPreview.style.display = 'block';
             });
         }
 
