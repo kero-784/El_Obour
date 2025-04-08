@@ -389,7 +389,7 @@
                     </div>
                 </div>
                 <!-- Current Price Input (Shown only for "مرتجع") -->
-                <div class="form-group" id="currentPriceDiv" style="display:none;">
+                <div class="form-group" id="currentPriceDiv" style="display:none; display: flex;"> <!-- Flex to keep label and input inline when visible -->
                     <label for="currentPrice">Current Price:</label>
                     <input type="number" class="form-control adjustable-width price-input" id="currentPrice"
                         oninput="calculateTotal()">
@@ -544,7 +544,7 @@
 
 
         let database = []; // In-memory database
-        let entries = [];   // In-memory entries array (now will manage both local and Firebase entries)
+        let entries = [];   // In-memory entries array
         const databaseFileNameLocal = "pricing database.xlsx";
         const githubDatabaseFileName = "pricing database.xlsx";
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv"; // UPDATED GOOGLE SHEET URL
@@ -732,10 +732,15 @@
         }
 
         // clearDatabase function - modified to clear Firebase database (No changes needed)
-        function clearDatabase() {
+        async function clearDatabase() {
+            try {
+                await clearFirebaseCollection(databaseCollectionName); // Clear Firebase database collection
                 database = []; // Clear in-memory database
-                displayMessage('Database cleared from memory!');
-
+                displayMessage('Database cleared from Firebase and memory!');
+            } catch (error) {
+                console.error('Error clearing Firebase database:', error);
+                displayMessage('Error clearing Firebase database.', true);
+            }
         }
 
         // getItemDetails function - modified to fetch from Firebase and use lowercase column titles (No changes needed)
@@ -978,6 +983,18 @@
                 console.error('Error clearing all entries from Firebase:', error);
                 displayMessage('Error clearing all entries from Firebase.', true);
             }
+        }
+
+
+        // NEW clearFirebaseCollection function (if not already present)
+        async function clearFirebaseCollection(collectionName) {
+            const collectionRef = db.collection(collectionName);
+            const querySnapshot = await collectionRef.get();
+            const batch = db.batch();
+            querySnapshot.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            return batch.commit();
         }
 
 
