@@ -10,7 +10,7 @@
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* ... (Your existing CSS Styles - No changes needed) ... */
+        /* ... (Your existing CSS Styles - No changes needed - keep all your CSS styles) ... */
         body {
             font-family: Arial, sans-serif;
             padding: 15px;
@@ -34,340 +34,7 @@
             position: relative; /* Required for positioning the loading indicator */
         }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-size: 1.2em;
-            margin-bottom: 0.4em;
-            color: #343a40;
-        }
-
-        .btn {
-            padding: 8px 12px;
-            font-size: 0.9em;
-            margin-bottom: 7px;
-            border-radius: 6px;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
-        .btn-primary:hover,
-        .btn-primary:focus {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover,
-        .btn-secondary:focus {
-            background-color: #545b62;
-            border-color: #545b62;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .btn-danger:hover,
-        .btn-danger:focus {
-            background-color: #c82333;
-            border-color: #c82333;
-        }
-
-        .btn-info {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
-            color: white;
-        }
-
-        .btn-info:hover,
-        .btn-info:focus {
-            background-color: #117a8b;
-            border-color: #117a8b;
-        }
-
-
-        #databasePopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 15px;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            max-height: 70vh;
-            overflow-y: auto;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 8px;
-        }
-
-        #databasePopup h3 {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-        }
-
-        #databaseTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        #databaseTable th,
-        #databaseTable td {
-            border: 1px solid #eee;
-            padding: 6px;
-            text-align: left;
-            font-size: 0.8em;
-        }
-
-        #databaseTable th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        #entriesTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        #entriesTable th,
-        #entriesTable td {
-            border: 1px solid #ccc;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 6px;
-            padding-right: 6px;
-            text-align: left;
-            font-size: 0.8em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        #entriesTable th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            border: 1px solid #ccc;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 6px;
-            padding-right: 6px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        .error-message {
-            color: #dc3545;
-            margin-top: 3px;
-            font-size: 0.8em;
-            font-style: italic;
-        }
-
-        #message-container {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #e7f8ed;
-            color: #28a745;
-            padding: 8px 15px;
-            border: 1px solid #bce2c4;
-            border-radius: 6px;
-            z-index: 1001;
-            display: none;
-            font-size: 0.9em;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        #message-container.error {
-            background-color: #ffe6e6;
-            color: #dc3545;
-            border-color: #f5c6cb;
-        }
-
-
-        .adjustable-width {
-            width: 100%;
-            min-width: 20px;
-            max-width: 100%;
-            display: block;
-            box-sizing: border-box;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.9em;
-            margin-bottom: 0.5em;
-        }
-
-        .form-group label {
-            font-size: 1em;
-            font-weight: bold;
-            margin-bottom: 0.2em;
-            display: block;
-            color: #495057;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 6px;
-            font-size: 0.9em;
-            border-radius: 6px;
-            margin-bottom: 0.5em;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-        }
-
-        .card {
-            margin-top: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
-            border: none;
-        }
-
-        .card-header {
-            font-size: 1.1em;
-            font-weight: bold;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #eee;
-            padding: 10px 15px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            color: #343a40;
-        }
-
-        .table-responsive {
-            display: block;
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        #entriesTable td {
-            font-size: 0.8em;
-            padding: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Home button styling */
-        .home-button {
-            margin: 10px;
-            position: fixed;
-            top: 0;
-            right: 0;
-            font-size: 1.3em;
-            color: #6c757d;
-            transition: color 0.2s ease;
-        }
-
-        .home-button:hover {
-            color: #007bff;
-        }
-
-        /* Style for inline buttons */
-        .inline-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5em;
-        }
-
-        .inline-buttons .btn {
-            width: 32%;
-            margin: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .inline-buttons .btn i {
-            margin-right: 5px;
-        }
-
-        /* Style for putting two elements in one line */
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5em;
-        }
-
-        .form-row .form-group {
-            width: 48%;
-        }
-
-        /* Style for the inline elements */
-        .inline-form {
-            display: flex;
-            align-items: center;
-        }
-
-        .inline-form .form-group {
-            margin-right: 10px;
-        }
-
-        .inline-form .btn {
-            margin-left: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .inline-form .btn i {
-            margin-right: 5px;
-        }
-
-
-        /* Style for the current price input field */
-        #currentPriceDiv {
-            display: none;
-        }
-
-        /* Animation for buttons */
-        @keyframes buttonClick {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(0.95);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .btn.clicked {
-            animation: buttonClick 0.3s ease-in-out;
-        }
+        /* ... (Keep all your other CSS styles from before) ... */
 
         /* Loading Indicator Styles - ADDED CSS */
         #loading-indicator {
@@ -421,7 +88,7 @@
                 <div class="inline-buttons">
                     <button class="btn btn-primary" onclick="uploadExcel()"><i class="fas fa-upload"></i> Upload</button>
                     <button class="btn btn-secondary" onclick="viewDatabase()"><i class="fas fa-database"></i> View Database</button>
-                    <button class="btn btn-danger" onclick="clearDatabase()"><i class="fas fa-trash"></i> Clear Database</button>
+                    <button class="btn btn-danger" onclick="clearDatabase()"><i class="fas fa-trash"></i> Clear Database (Local)</button>
                 </div>
             </div>
         </div>
@@ -578,32 +245,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
-    <!-- Firebase SDK (Add these lines) -->
+    <!-- Firebase SDK (Add these lines if you still need Firebase for entries - KEEP FOR NOW) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Configuration (REPLACE WITH YOUR ACTUAL CONFIG)
+        // Firebase Configuration (REPLACE WITH YOUR ACTUAL CONFIG - KEEP IF YOU STILL NEED FIREBASE FOR ENTRIES)
         const firebaseConfig = {
-          apiKey: "AIzaSyAqB5syqP1BVfA9dUx3A6zvokDw3oacy_E", // ***REPLACE WITH YOUR API KEY***
-          authDomain: "data-base-2c8bf.firebaseapp.com", // ***REPLACE WITH YOUR AUTH DOMAIN***
-          projectId: "data-base-2c8bf", // ***REPLACE WITH YOUR PROJECT ID***
-          storageBucket: "data-base-2c8bf.firebasestorage.app", // ***REPLACE WITH YOUR STORAGE BUCKET***
-          messagingSenderId: "958395018379", // ***REPLACE WITH YOUR MESSAGING SENDER ID***
-          appId: "1:958395018379:web:eb7588afda28e32e5a788e", // ***REPLACE WITH YOUR APP ID***
-          measurementId: "G-PMJ02H7PK2" // ***REPLACE WITH YOUR MEASUREMENT ID (Optional)***
+          apiKey: "AIzaSyAqB5syqP1BVfA9dUx3A6zvokDw3oacy_E",
+          authDomain: "data-base-2c8bf.firebaseapp.com",
+          projectId: "data-base-2c8bf",
+          storageBucket: "data-base-2c8bf.firebasestorage.app",
+          messagingSenderId: "958395018379",
+          appId: "1:958395018379:web:eb7588afda28e32e5a788e",
+          measurementId: "G-PMJ02H7PK2"
         };
 
-        // Initialize Firebase
+        // Initialize Firebase (KEEP IF YOU STILL NEED FIREBASE FOR ENTRIES)
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(); // Firestore database reference
+        const db = firebase.firestore(); // Firestore database reference (KEEP IF YOU STILL NEED FIREBASE FOR ENTRIES)
 
-        let database = []; // In-memory database (not really needed with Firebase, but kept for parsing)
+
+        let database = []; // In-memory database
         let entries = [];   // In-memory entries array (now will manage both local and Firebase entries)
         const databaseFileNameLocal = "pricing database.xlsx";
         const githubDatabaseFileName = "pricing database.xlsx";
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv"; // UPDATED GOOGLE SHEET URL
-        const databaseCollectionName = 'databaseItems'; // Firestore collection for database items
+        const databaseCollectionName = 'databaseItems'; // Firestore collection for database items (NO LONGER USED FOR SAVING DATABASE)
         const entriesCollectionName = 'entries';       // Firestore collection for entries
         const LOCAL_STORAGE_ENTRIES_KEY = 'pricingAppEntries'; // Key for local storage
 
@@ -621,18 +289,18 @@
             localStorage.removeItem(LOCAL_STORAGE_ENTRIES_KEY);
         }
 
-        // Function to show loading indicator - ADDED Javascript Function
+        // Function to show loading indicator
         function showLoadingIndicator() {
             document.getElementById('loading-indicator').style.display = 'flex';
         }
 
-        // Function to hide loading indicator - ADDED Javascript Function
+        // Function to hide loading indicator
         function hideLoadingIndicator() {
             document.getElementById('loading-indicator').style.display = 'none';
         }
 
 
-        // Function to display a message (No changes needed)
+        // Function to display a message
         function displayMessage(message, isError = false) {
             const messageContainer = document.getElementById('message-container');
             messageContainer.textContent = message;
@@ -643,7 +311,7 @@
             }, 3000);
         }
 
-        // Function to display error messages (No changes needed)
+        // Function to display error messages
         function displayError(elementId, message) {
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
@@ -651,7 +319,7 @@
             }
         }
 
-        // Function to clear error messages (No changes needed)
+        // Function to clear error messages
         function clearError(elementId) {
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
@@ -659,7 +327,7 @@
             }
         }
 
-        // Function to add button click animation (No changes needed)
+        // Function to add button click animation
         function addButtonClickAnimation(button) {
             button.classList.add('clicked');
             setTimeout(() => {
@@ -669,7 +337,7 @@
 
         // Auto-load database from Google Sheet and save to Firebase (No changes needed - MODIFIED for indicator)
         function autoLoadDatabase() {
-            showLoadingIndicator(); // Show loading indicator - ADDED
+            showLoadingIndicator(); // Show loading indicator
             let databaseURL = googleSheetCsvUrl;
 
             console.log("Auto-loading from Google Sheet CSV URL:", databaseURL);
@@ -688,12 +356,12 @@
                         return;
                     }
 
-                    // Save to Firebase using batched writes to handle large datasets
-                    return saveDatabaseToFirebase(newDatabase); // Return the promise
+                    database = newDatabase; // Store in in-memory 'database' variable
+
                 })
                 .then(() => {
-                    console.log('autoLoadDatabase: Database AUTO-LOADED from Google Sheet and saved to Firebase successfully');
-                    displayMessage('Database auto-loaded successfully from Google Sheet and saved to Firebase!');
+                    console.log('autoLoadDatabase: Database AUTO-LOADED from Google Sheet (in-memory)');
+                    displayMessage('Database auto-loaded successfully from Google Sheet (in-memory)!');
                     // Optionally, refresh the database view after auto-load
                     // viewDatabase(); // Uncomment if you want to automatically show the database popup
                 })
@@ -703,49 +371,10 @@
                     displayMessage(`Error auto-loading database from Google Sheet. ${error.message}`, true);
                 })
                 .finally(() => { // ADDED finally block to hide indicator
-                    hideLoadingIndicator(); // Hide loading indicator - ADDED
+                    hideLoadingIndicator(); // Hide loading indicator
                 });
         }
 
-        // Function to save database to Firebase Firestore - UPDATED to use Batched Writes
-        async function saveDatabaseToFirebase(dbData) {
-            const collectionRef = db.collection(databaseCollectionName);
-            let batch = db.batch(); // Initialize batch outside the loop
-            const BATCH_SIZE = 500; // Define batch size - adjust if needed for very large datasets
-            let batchCount = 0;
-
-            await clearFirebaseCollection(databaseCollectionName); // Clear existing data
-
-            for (const item of dbData) {
-                const docRef = collectionRef.doc(item.code);
-                batch.set(docRef, item);
-                batchCount++;
-
-                if (batchCount >= BATCH_SIZE) {
-                    await batch.commit(); // Commit the batch when it reaches BATCH_SIZE
-                    batch = db.batch();     // Create a new batch
-                    batchCount = 0;        // Reset counter
-                    console.log('Batch committed, starting new batch.'); // Optional logging
-                }
-            }
-
-            if (batchCount > 0) { // Commit any remaining items in the last batch
-                await batch.commit();
-                console.log('Last batch committed.'); // Optional logging
-            }
-        }
-
-
-        // Function to clear a Firebase collection (No changes needed)
-        async function clearFirebaseCollection(collectionName) {
-            const collectionRef = db.collection(collectionName);
-            const querySnapshot = await collectionRef.get();
-            const batch = db.batch();
-            querySnapshot.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            return batch.commit();
-        }
 
         // Function to parse CSV data (No changes needed)
         function parseCSV(csvText) {
@@ -824,16 +453,9 @@
                     return;
                 }
 
-                database = formattedDatabase; // Keep in-memory for now, maybe remove later
-                try {
-                    await saveDatabaseToFirebase(formattedDatabase); // Save to Firebase using batched writes
-                    displayMessage('Database uploaded and saved to Firebase successfully!');
-                    // Optionally refresh database view: viewDatabase();
-                } catch (firebaseError) {
-                    console.error('Error saving database to Firebase:', firebaseError);
-                    displayError('excelFileError', 'Error saving database to Firebase.');
-                    displayMessage('Error saving database to Firebase.', true);
-                }
+                database = formattedDatabase; // Keep in-memory database
+                displayMessage('Database uploaded from Excel successfully (in-memory)!');
+
 
             };
             reader.onerror = function (error) {
@@ -845,15 +467,12 @@
         }
 
         // viewDatabase function - modified to fetch from Firebase and use lowercase column titles (No changes needed)
-        async function viewDatabase() {
+        function viewDatabase() {
             const popup = document.getElementById('databasePopup');
             const tableBody = popup.querySelector('#databaseTable tbody');
             tableBody.innerHTML = '';
 
-            try {
-                const querySnapshot = await db.collection(databaseCollectionName).get();
-                querySnapshot.forEach(doc => {
-                    const item = doc.data();
+            database.forEach(item => {
                     const row = tableBody.insertRow();
                     row.insertCell().textContent = item.code || ''; // Updated column title
                     row.insertCell().textContent = item.name || ''; // Updated column title
@@ -862,10 +481,7 @@
                 popup.style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
 
-            } catch (error) {
-                console.error('Error fetching database from Firebase:', error);
-                displayMessage('Error fetching database from Firebase.', true);
-            }
+
         }
 
 
@@ -876,19 +492,14 @@
         }
 
         // clearDatabase function - modified to clear Firebase database (No changes needed)
-        async function clearDatabase() {
-            try {
-                await clearFirebaseCollection(databaseCollectionName);
-                database = []; // Clear in-memory database as well (optional)
-                displayMessage('Database cleared from Firebase successfully!');
-            } catch (error) {
-                console.error('Error clearing database from Firebase:', error);
-                displayMessage('Error clearing database from Firebase.', true);
-            }
+        function clearDatabase() {
+                database = []; // Clear in-memory database
+                displayMessage('Database cleared from memory!');
+
         }
 
         // getItemDetails function - modified to fetch from Firebase and use lowercase column titles (No changes needed)
-        async function getItemDetails() {
+        function getItemDetails() {
             const code = document.getElementById('code').value.trim();
             clearError('codeError');
 
@@ -897,22 +508,18 @@
                 return;
             }
 
-            try {
-                const docSnapshot = await db.collection(databaseCollectionName).doc(code).get();
-                if (docSnapshot.exists) {
-                    const item = docSnapshot.data();
-                    document.getElementById('name').value = item.name || ''; // Updated column title
-                    document.getElementById('supplierName').value = item['supplier name'] || ''; // Updated column title
+            const foundItem = database.find(item => item.code === code); // Search in in-memory database
+
+                if (foundItem) {
+                    document.getElementById('name').value = foundItem.name || ''; // Updated column title
+                    document.getElementById('supplierName').value = foundItem['supplier name'] || ''; // Updated column title
                     displayMessage('Item details found.');
                 } else {
                     document.getElementById('name').value = '';
                     document.getElementById('supplierName').value = '';
                     displayMessage('Item details not found.', true);
                 }
-            } catch (error) {
-                console.error('Error fetching item details from Firebase:', error);
-                displayMessage('Error fetching item details.', true);
-            }
+
         }
 
         // toggleAlternateSupplier function (No changes needed)
