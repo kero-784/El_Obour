@@ -10,50 +10,341 @@
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* ... (Your existing CSS Styles - No changes needed - keep all your CSS styles) ... */
+        /* --- Enhanced CSS Styles with Animations --- */
+
+        /* --- Color Palette --- */
+        :root {
+            --primary-color: #007bff;
+            --primary-color-darker: #0056b3;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --card-header-background: #e9ecef;
+            --text-color-dark: #343a40;
+            --text-color-light: #ffffff;
+            --accent-color: #28a745;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             padding: 15px;
             overflow-x: auto;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            background-color: #f8f9fa;
-            overflow: auto !important; /* Important: Ensure body doesn't clip content during capture */
+            background-color: var(--background-color);
+            color: var(--text-color-dark);
+            overflow: auto !important;
         }
 
         #app-container {
             width: 95%;
             max-width: 700px;
             margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            position: relative; /* Required for positioning the loading indicator */
+            background-color: var(--card-background);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
-        /* ... (Keep all your other CSS styles from before) ... */
+        /* --- Top Actions Buttons --- */
+        .top-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
 
-        /* Loading Indicator Styles - ADDED CSS */
+        .top-actions button {
+            padding: 8px 12px;
+            border: none;
+            background-color: var(--secondary-color);
+            color: var(--text-color-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .top-actions button:hover {
+            background-color: var(--secondary-color);
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* --- Card Styling --- */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: var(--card-header-background);
+            color: var(--text-color-dark);
+            font-weight: bold;
+            padding: 12px 20px;
+            border-bottom: 1px solid #ddd;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* --- Form Styling --- */
+        .form-group {
+            margin-bottom: 1rem; /* Further reduced margin-bottom for more compact layout */
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0;
+            margin-right: 10px;
+            color: var(--text-color-dark);
+            text-align: left;
+            flex-shrink: 0;
+            width: auto;
+            white-space: nowrap; /* Prevent label text from wrapping */
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 0.6rem 0.7rem; /* Slightly smaller padding */
+            box-shadow: none !important;
+            transition: border-color 0.3s ease;
+            vertical-align: middle;
+            text-align: right;
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+        }
+
+        .adjustable-width.code-input {
+            width: 120px; /* Further reduced width */
+        }
+
+        .adjustable-width.type-select {
+            width: 100px; /* Width for type select */
+        }
+
+        .adjustable-width.price-input {
+            width: 100px; /* Further reduced width */
+        }
+
+        .adjustable-width.unit-input {
+            width: 80px; /* Width for unit inputs */
+        }
+
+        .adjustable-width.discount-input,
+        .adjustable-width.vat-select {
+            width: 90px; /* Width for discount and vat */
+        }
+
+
+        .inline-form {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Reduced gap in inline forms */
+        }
+
+        .inline-form .form-control {
+            margin-bottom: 0;
+        }
+
+        /* --- Buttons (General) --- */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--text-color-light);
+            border-radius: 8px;
+            padding: 0.6rem 1rem; /* Slightly smaller button padding */
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: var(--primary-color-darker) !important;
+            border-color: var(--primary-color-darker) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary, .btn-danger, .btn-info {
+            border-radius: 8px;
+            padding: 0.5rem 0.9rem; /* Slightly smaller button padding */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-secondary:hover, .btn-danger:hover, .btn-info:hover {
+            transform: scale(1.02);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Entries Table Styling --- */
+        .table-responsive {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        #entriesTable {
+            margin-bottom: 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #entriesTable thead th {
+            background-color: var(--card-header-background);
+            color: var(--text-color-dark);
+            font-weight: bold;
+            padding: 8px 12px; /* Smaller header padding */
+            border-bottom: 2px solid #ddd;
+            text-align: left;
+        }
+
+        #entriesTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #entriesTable tbody tr:hover {
+            background-color: #f2f2f2;
+            transition: background-color 0.2s ease;
+        }
+
+        #entriesTable td {
+            padding: 6px 10px; /* Smaller cell padding */
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        #entriesTable tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* --- Message Container Animation --- */
+        #message-container {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 123, 255, 0.9);
+            color: var(--text-color-light);
+            padding: 10px 15px; /* Smaller message padding */
+            border-radius: 8px;
+            z-index: 1100;
+            opacity: 0;
+            transition: opacity 0.4s ease, top 0.4s ease;
+            top: -50px;
+        }
+
+        #message-container.show {
+            opacity: 1;
+            top: 20px;
+        }
+
+        #message-container.error {
+            background-color: rgba(220, 53, 69, 0.9);
+        }
+
+        /* --- Loading Indicator Styles --- */
         #loading-indicator {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
-            display: none; /* Hidden by default */
+            background-color: rgba(255, 255, 255, 0.7);
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Ensure it's on top of other content */
+            z-index: 1000;
         }
 
         .spinner-border {
             width: 3rem;
             height: 3rem;
+        }
+
+        /* --- Database Popup Styling and Animation --- */
+        #databasePopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background-color: var(--card-background);
+            padding: 20px; /* Smaller popup padding */
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1050;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #databasePopup.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #databasePopup h3 {
+            margin-top: 0;
+            margin-bottom: 12px; /* Smaller popup heading margin */
+            color: var(--text-color-dark);
+        }
+
+        #databasePopup #databaseTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #databasePopup #databaseTable th, #databasePopup #databaseTable td {
+            padding: 6px 10px; /* Smaller popup table cell padding */
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        #databasePopup #databaseTable th {
+            background-color: var(--card-header-background);
+            font-weight: bold;
+        }
+
+        #databasePopup #databaseTable tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+        }
+
+        #overlay.show {
+            display: block;
         }
     </style>
 </head>
@@ -61,7 +352,7 @@
 <body>
 
     <div id="app-container">
-        <!-- Loading Indicator - ADDED HTML -->
+        <!-- Loading Indicator -->
         <div id="loading-indicator">
             <div class="spinner-border text-primary" role="status">
                 <span class="sr-only">Loading...</span>
@@ -69,94 +360,83 @@
             <p>Loading database...</p>
         </div>
 
-        <a href="#" class="home-button" onclick="goHome()"><i class="fas fa-home"></i></a>
-
-        <h1>Pricing App</h1>
+        <!-- Top Right Action Buttons -->
+        <div class="top-actions">
+            <button class="btn btn-secondary btn-sm" onclick="viewDatabase()" title="View Database"><i class="fas fa-database"></i></button>
+            <button class="btn btn-danger btn-sm" onclick="clearDatabase()" title="Clear Local Database"><i class="fas fa-trash"></i></button>
+        </div>
 
         <!-- Message Container -->
         <div id="message-container"></div>
-
-        <!-- Database Management Section -->
-        <div class="card mb-3">
-            <div class="card-header">Database Management</div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="excelFile">Upload Excel File:</label>
-                    <input type="file" class="form-control-file" id="excelFile" accept=".xlsx, .xls">
-                    <div id="excelFileError" class="error-message"></div>
-                </div>
-                <div class="inline-buttons">
-                    <button class="btn btn-primary" onclick="uploadExcel()"><i class="fas fa-upload"></i> Upload</button>
-                    <button class="btn btn-secondary" onclick="viewDatabase()"><i class="fas fa-database"></i> View Database</button>
-                    <button class="btn btn-danger" onclick="clearDatabase()"><i class="fas fa-trash"></i> Clear Database (Local)</button>
-                </div>
-            </div>
-        </div>
 
         <!-- Data Retrieval & Calculation Section -->
         <div class="card mb-3">
             <div class="card-header">Item Details & Calculation</div>
             <div class="card-body">
-                <div class="form-group">
-                    <label for="code">Code:</label>
-                    <div class="inline-form">
-                        <input type="text" class="form-control adjustable-width" id="code">
-                        <select class="form-control adjustable-width" id="type" onchange="toggleCurrentPriceField()">
+                <div class="form-row"> <!-- Row for Code and Type -->
+                    <div class="form-group col-md-6"> <!-- Adjust column size as needed -->
+                        <label for="code">Code:</label>
+                        <input type="text" class="form-control adjustable-width code-input" id="code" oninput="getItemDetails()">
+                        <div id="codeError" class="error-message"></div>
+                    </div>
+                    <div class="form-group col-md-6"> <!-- Adjust column size as needed -->
+                        <label for="type">Type:</label>
+                        <select class="form-control adjustable-width type-select" id="type"
+                            onchange="toggleCurrentPriceField()">
                             <option value="شراء">شراء</option>
                             <option value="مرتجع">مرتجع</option>
                         </select>
-                        <button class="btn btn-primary ml-2" onclick="getItemDetails()"><i class="fas fa-search"></i> Search</button>
                     </div>
-                    <div id="codeError" class="error-message"></div>
                 </div>
                 <!-- Current Price Input (Shown only for "مرتجع") -->
-                <div class="form-group" id="currentPriceDiv">
+                <div class="form-group" id="currentPriceDiv" style="display:none;">
                     <label for="currentPrice">Current Price:</label>
-                    <input type="number" class="form-control adjustable-width" id="currentPrice"
+                    <input type="number" class="form-control adjustable-width price-input" id="currentPrice"
                         oninput="calculateTotal()">
                     <div id="currentPriceError" class="error-message"></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" class="form-control adjustable-width" id="name" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="supplierName">Supplier Name:</label>
-                        <input type="text" class="form-control adjustable-width" id="supplierName" readonly>
-                    </div>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control adjustable-width" id="name" readonly>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="alternateSupplierCheck"
-                        onchange="toggleAlternateSupplier()">
-                    <label class="form-check-label" for="alternateSupplierCheck">شراء من مورد اخر</label>
+                <div class="form-group">
+                    <label for="supplierName">Supplier Name:</label>
+                    <input type="text" class="form-control adjustable-width" id="supplierName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="alternateSupplierCheck">شراء من مورد اخر:</label>
+                    <div class="form-check" style="padding-top: 8px; padding-bottom: 8px;">
+                        <input type="checkbox" class="form-check-input" id="alternateSupplierCheck"
+                            onchange="toggleAlternateSupplier()" style="margin-left: 0;">
+                        <label class="form-check-label" for="alternateSupplierCheck" style="margin-left: 20px; margin-bottom: 0;"> </label>
+                    </div>
                 </div>
                 <div class="form-group" id="alternateSupplierDiv" style="display: none;">
                     <label for="alternateSupplierName">Alternate Supplier Name:</label>
                     <input type="text" class="form-control adjustable-width" id="alternateSupplierName">
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
+                <div class="form-row"> <!-- Row for Case Cost and Unit -->
+                    <div class="form-group col-md-6">
                         <label for="cost">Case Cost:</label>
-                        <input type="number" class="form-control adjustable-width" id="cost" required
+                        <input type="number" class="form-control adjustable-width unit-input" id="cost" required
                             oninput="calculateTotal()">
                         <div id="costError" class="error-message"></div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="unit">Units per Case:</label>
-                        <input type="number" class="form-control adjustable-width" id="unit" value="1"
+                        <input type="number" class="form-control adjustable-width unit-input" id="unit" value="1"
                             oninput="calculateTotal()">
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
+                <div class="form-row"> <!-- Row for Discount and VAT -->
+                    <div class="form-group col-md-6">
                         <label for="discount">Discount (%):</label>
-                        <input type="number" class="form-control adjustable-width" id="discount" value="0"
+                        <input type="number" class="form-control adjustable-width discount-input" id="discount" value="0"
                             oninput="calculateTotal()">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="vat">VAT (%):</label>
-                        <select class="form-control adjustable-width" id="vat" onchange="calculateTotal()">
+                        <select class="form-control adjustable-width vat-select" id="vat" onchange="calculateTotal()">
                             <option value="0" selected>0</option>
                             <option value="5">5</option>
                             <option value="14">14</option>
@@ -164,15 +444,13 @@
                         <div id="vatError" class="error-message"></div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="unitPrice">Unit Price (After Discount & VAT):</label>
-                        <input type="text" class="form-control adjustable-width" id="unitPrice" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="casePrice">Case Price (After Discount & VAT):</label>
-                        <input type="text" class="form-control adjustable-width" id="casePrice" readonly>
-                    </div>
+                <div class="form-group">
+                    <label for="unitPrice">Unit Price (After Discount & VAT):</label>
+                    <input type="text" class="form-control adjustable-width" id="unitPrice" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="casePrice">Case Price (After Discount & VAT):</label>
+                    <input type="text" class="form-control adjustable-width" id="casePrice" readonly>
                 </div>
 
 
@@ -207,7 +485,6 @@
                         </tbody>
                     </table>
                 </div>
-                <button class="btn btn-info mt-2" onclick="uploadEntriesToFirebase()"><i class="fas fa-upload"></i> Upload Entries to Database</button>
             </div>
         </div>
 
@@ -299,15 +576,17 @@
             document.getElementById('loading-indicator').style.display = 'none';
         }
 
-
-        // Function to display a message
+        // Function to display a message with animation
         function displayMessage(message, isError = false) {
             const messageContainer = document.getElementById('message-container');
             messageContainer.textContent = message;
-            messageContainer.className = isError ? 'error' : '';
+            messageContainer.className = isError ? 'error show' : 'show'; // Add 'show' class for animation
             messageContainer.style.display = 'block';
             setTimeout(() => {
-                messageContainer.style.display = 'none';
+                messageContainer.classList.remove('show'); // Remove 'show' class to fade out
+                setTimeout(() => {
+                    messageContainer.style.display = 'none'; // Then hide completely after animation
+                }, 400); // Match transition duration (0.4s in CSS)
             }, 3000);
         }
 
@@ -415,60 +694,17 @@
             window.location.href = '/';
         }
 
-        // uploadExcel function - modified to save to Firebase (No changes needed)
-        function uploadExcel() {
-            const fileInput = document.getElementById('excelFile');
-            const file = fileInput.files[0];
-            clearError('excelFileError');
-
-            if (!file) {
-                displayError('excelFileError', 'Please select an Excel file.');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = async function (e) { // Make async
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array', codepage: 65001 });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                // Convert headers to lowercase with space replacement in sheet_to_json options
-                const newDatabase = XLSX.utils.sheet_to_json(worksheet, { raw: false, dateNF: 'yyyy-mm-dd', header: 1 });
-
-                // Transform the data to use lowercase headers
-                const formattedDatabase = newDatabase.slice(1).map(row => {
-                    const formattedRow = {};
-                    newDatabase[0].forEach((header, index) => {
-                        if (header) { // Check if header exists to avoid errors
-                            const lowerCaseHeader = header.toLowerCase().replace(/ /g, ' '); // Convert header to lowercase and handle spaces
-                            formattedRow[lowerCaseHeader] = row[index];
-                        }
-                    });
-                    return formattedRow;
-                });
-
-
-                if (formattedDatabase.length > 0 && (!formattedDatabase[0].code || !formattedDatabase[0].name || !formattedDatabase[0]['supplier name'])) { // Updated column titles
-                    displayError('excelFileError', 'Excel file must have columns: code, name, and supplier name.'); // Updated column titles
-                    return;
-                }
-
-                database = formattedDatabase; // Keep in-memory database
-                displayMessage('Database uploaded from Excel successfully (in-memory)!');
-
-
-            };
-            reader.onerror = function (error) {
-                displayError('excelFileError', 'Error reading the Excel file.');
-                console.error("Error reading Excel file:", error);
-                displayMessage('Error reading the Excel file.', true);
-            };
-            reader.readAsArrayBuffer(file);
-        }
 
         // viewDatabase function - modified to fetch from Firebase and use lowercase column titles (No changes needed)
         function viewDatabase() {
             const popup = document.getElementById('databasePopup');
+            const overlay = document.getElementById('overlay');
+
+            popup.classList.add('show'); // Add 'show' class to animate in
+            overlay.classList.add('show'); // Add 'show' class to overlay
+            popup.style.display = 'block'; // Ensure block display for animation to work
+            overlay.style.display = 'block'; // Ensure overlay is displayed
+
             const tableBody = popup.querySelector('#databaseTable tbody');
             tableBody.innerHTML = '';
 
@@ -478,17 +714,21 @@
                     row.insertCell().textContent = item.name || ''; // Updated column title
                     row.insertCell().textContent = item['supplier name'] || ''; // Updated column title
                 });
-                popup.style.display = 'block';
-                document.getElementById('overlay').style.display = 'block';
-
-
         }
 
 
         // closeDatabasePopup function (No changes needed)
         function closeDatabasePopup() {
-            document.getElementById('databasePopup').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
+            const popup = document.getElementById('databasePopup');
+            const overlay = document.getElementById('overlay');
+
+            popup.classList.remove('show'); // Remove 'show' class to animate out
+            overlay.classList.remove('show'); // Remove 'show' class from overlay
+
+            setTimeout(() => {
+                popup.style.display = 'none'; // Hide popup after animation
+                overlay.style.display = 'none'; // Hide overlay after animation
+            }, 300); // Match transition duration (0.3s in CSS)
         }
 
         // clearDatabase function - modified to clear Firebase database (No changes needed)
@@ -504,8 +744,10 @@
             clearError('codeError');
 
             if (!code) {
-                displayError('codeError', 'Please enter a code.');
-                return;
+                // If code input is cleared, clear item details as well
+                document.getElementById('name').value = '';
+                document.getElementById('supplierName').value = '';
+                return; // Exit function early if no code
             }
 
             const foundItem = database.find(item => item.code === code); // Search in in-memory database
@@ -533,7 +775,7 @@
         function toggleCurrentPriceField() {
             const typeSelect = document.getElementById('type');
             const currentPriceDiv = document.getElementById('currentPriceDiv');
-            currentPriceDiv.style.display = typeSelect.value === 'مرتجع' ? 'block' : 'none';
+            currentPriceDiv.style.display = typeSelect.value === 'مرتجع' ? 'flex' : 'none'; // Change to 'flex'
         }
 
         // calculateTotal function (No changes needed)
