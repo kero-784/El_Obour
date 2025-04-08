@@ -585,13 +585,13 @@
     <script>
         // Firebase Configuration (REPLACE WITH YOUR ACTUAL CONFIG)
         const firebaseConfig = {
-          apiKey: "AIzaSyAqB5syqP1BVfA9dUx3A6zvokDw3oacy_E",
-          authDomain: "data-base-2c8bf.firebaseapp.com",
-          projectId: "data-base-2c8bf",
-          storageBucket: "data-base-2c8bf.firebasestorage.app",
-          messagingSenderId: "958395018379",
-          appId: "1:958395018379:web:eb7588afda28e32e5a788e",
-          measurementId: "G-PMJ02H7PK2"
+          apiKey: "AIzaSyAqB5syqP1BVfA9dUx3A6zvokDw3oacy_E", // ***REPLACE WITH YOUR API KEY***
+          authDomain: "data-base-2c8bf.firebaseapp.com", // ***REPLACE WITH YOUR AUTH DOMAIN***
+          projectId: "data-base-2c8bf", // ***REPLACE WITH YOUR PROJECT ID***
+          storageBucket: "data-base-2c8bf.firebasestorage.app", // ***REPLACE WITH YOUR STORAGE BUCKET***
+          messagingSenderId: "958395018379", // ***REPLACE WITH YOUR MESSAGING SENDER ID***
+          appId: "1:958395018379:web:eb7588afda28e32e5a788e", // ***REPLACE WITH YOUR APP ID***
+          measurementId: "G-PMJ02H7PK2" // ***REPLACE WITH YOUR MEASUREMENT ID (Optional)***
         };
 
         // Initialize Firebase
@@ -688,7 +688,7 @@
                         return;
                     }
 
-                    // Save to Firebase instead of localStorage
+                    // Save to Firebase using batched writes to handle large datasets
                     return saveDatabaseToFirebase(newDatabase); // Return the promise
                 })
                 .then(() => {
@@ -707,20 +707,34 @@
                 });
         }
 
-        // Function to save database to Firebase Firestore (No changes needed)
+        // Function to save database to Firebase Firestore - UPDATED to use Batched Writes
         async function saveDatabaseToFirebase(dbData) {
             const collectionRef = db.collection(databaseCollectionName);
-            const batch = db.batch(); // Use batch for efficiency
+            let batch = db.batch(); // Initialize batch outside the loop
+            const BATCH_SIZE = 500; // Define batch size - adjust if needed for very large datasets
+            let batchCount = 0;
 
-            // Clear existing data first (optional - depends on if you want to overwrite or append)
-            await clearFirebaseCollection(databaseCollectionName);
+            await clearFirebaseCollection(databaseCollectionName); // Clear existing data
 
-            dbData.forEach(item => {
-                const docRef = collectionRef.doc(item.code); // Use code as document ID (assuming it's unique) // Updated column title
-                batch.set(docRef, item); // Set each item as a document
-            });
-            return batch.commit(); // Commit the batch write operation
+            for (const item of dbData) {
+                const docRef = collectionRef.doc(item.code);
+                batch.set(docRef, item);
+                batchCount++;
+
+                if (batchCount >= BATCH_SIZE) {
+                    await batch.commit(); // Commit the batch when it reaches BATCH_SIZE
+                    batch = db.batch();     // Create a new batch
+                    batchCount = 0;        // Reset counter
+                    console.log('Batch committed, starting new batch.'); // Optional logging
+                }
+            }
+
+            if (batchCount > 0) { // Commit any remaining items in the last batch
+                await batch.commit();
+                console.log('Last batch committed.'); // Optional logging
+            }
         }
+
 
         // Function to clear a Firebase collection (No changes needed)
         async function clearFirebaseCollection(collectionName) {
@@ -812,7 +826,7 @@
 
                 database = formattedDatabase; // Keep in-memory for now, maybe remove later
                 try {
-                    await saveDatabaseToFirebase(formattedDatabase); // Save to Firebase
+                    await saveDatabaseToFirebase(formattedDatabase); // Save to Firebase using batched writes
                     displayMessage('Database uploaded and saved to Firebase successfully!');
                     // Optionally refresh database view: viewDatabase();
                 } catch (firebaseError) {
