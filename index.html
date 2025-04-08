@@ -528,14 +528,14 @@
 
     <script>
         // Firebase Configuration (REPLACE WITH YOUR ACTUAL CONFIG - KEEP IF YOU STILL NEED FIREBASE FOR ENTRIES)
-        const firebaseConfig = {
-          apiKey: "YOUR_API_KEY", // REPLACE!
-          authDomain: "YOUR_AUTH_DOMAIN", // REPLACE!
-          projectId: "YOUR_PROJECT_ID", // REPLACE!
-          storageBucket: "YOUR_STORAGE_BUCKET", // REPLACE!
-          messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // REPLACE!
-          appId: "YOUR_APP_ID", // REPLACE!
-          measurementId: "YOUR_MEASUREMENT_ID" // REPLACE!
+       const firebaseConfig = {
+          apiKey: "AIzaSyAqB5syqP1BVfA9dUx3A6zvokDw3oacy_E",
+          authDomain: "data-base-2c8bf.firebaseapp.com",
+          projectId: "data-base-2c8bf",
+          storageBucket: "data-base-2c8bf.firebasestorage.app",
+          messagingSenderId: "958395018379",
+          appId: "1:958395018379:web:eb7588afda28e32e5a788e",
+          measurementId: "G-PMJ02H7PK2"
         };
 
         // Initialize Firebase (KEEP IF YOU STILL NEED FIREBASE FOR ENTRIES)
@@ -547,7 +547,7 @@
         let entries = [];   // In-memory entries array
         const databaseFileNameLocal = "pricing database.xlsx";
         const githubDatabaseFileName = "pricing database.xlsx";
-        const googleSheetCsvUrl = "YOUR_GOOGLE_SHEET_CSV_URL"; // REPLACE!
+        const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv"; // REPLACE!
         const databaseCollectionName = 'databaseItems'; // Firestore collection for database items (NO LONGER USED FOR SAVING DATABASE)
         const entriesCollectionName = 'entries';       // Firestore collection for entries
         const LOCAL_STORAGE_ENTRIES_KEY = 'pricingAppEntries'; // Key for local storage
