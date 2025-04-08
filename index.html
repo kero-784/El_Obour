@@ -628,8 +628,8 @@
                 })
                 .then(csvData => {
                     const newDatabase = parseCSV(csvData);
-                    if (newDatabase.length > 0 && (!newDatabase[0].Code || !newDatabase[0].Name || !newDatabase[0]['Supplier Name'])) {
-                        displayError('excelFileError', 'Google Sheet must have columns: Code, Name, and Supplier Name.');
+                    if (newDatabase.length > 0 && (!newDatabase[0].code || !newDatabase[0].name || !newDatabase[0]['supplier name'])) { // Updated column titles
+                        displayError('excelFileError', 'Google Sheet must have columns: code, name, and supplier name.'); // Updated column titles
                         return;
                     }
 
@@ -658,7 +658,7 @@
             await clearFirebaseCollection(databaseCollectionName);
 
             dbData.forEach(item => {
-                const docRef = collectionRef.doc(item.Code); // Use Code as document ID (assuming it's unique)
+                const docRef = collectionRef.doc(item.code); // Use code as document ID (assuming it's unique) // Updated column title
                 batch.set(docRef, item); // Set each item as a document
             });
             return batch.commit(); // Commit the batch write operation
@@ -676,9 +676,9 @@
         }
 
 
-        function parseCSV(csvText) { // No changes needed
+        function parseCSV(csvText) { // No changes needed, but ensure it handles lowercase headers
             const lines = csvText.trim().split('\n');
-            const headers = lines[0].split(',').map(header => header.trim());
+            const headers = lines[0].split(',').map(header => header.trim().toLowerCase().replace(/ /g, ' ')); // Convert headers to lowercase and handle spaces
             const data = [];
 
             for (let i = 1; i < lines.length; i++) {
@@ -724,16 +724,30 @@
                 const workbook = XLSX.read(data, { type: 'array', codepage: 65001 });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-                const newDatabase = XLSX.utils.sheet_to_json(worksheet, { raw: false, dateNF: 'yyyy-mm-dd' });
+                // Convert headers to lowercase with space replacement in sheet_to_json options
+                const newDatabase = XLSX.utils.sheet_to_json(worksheet, { raw: false, dateNF: 'yyyy-mm-dd', header: 1 });
 
-                if (newDatabase.length > 0 && (!newDatabase[0].Code || !newDatabase[0].Name || !newDatabase[0]['Supplier Name'])) {
-                    displayError('excelFileError', 'Excel file must have columns: Code, Name, and Supplier Name.');
+                // Transform the data to use lowercase headers
+                const formattedDatabase = newDatabase.slice(1).map(row => {
+                    const formattedRow = {};
+                    newDatabase[0].forEach((header, index) => {
+                        if (header) { // Check if header exists to avoid errors
+                            const lowerCaseHeader = header.toLowerCase().replace(/ /g, ' '); // Convert header to lowercase and handle spaces
+                            formattedRow[lowerCaseHeader] = row[index];
+                        }
+                    });
+                    return formattedRow;
+                });
+
+
+                if (formattedDatabase.length > 0 && (!formattedDatabase[0].code || !formattedDatabase[0].name || !formattedDatabase[0]['supplier name'])) { // Updated column titles
+                    displayError('excelFileError', 'Excel file must have columns: code, name, and supplier name.'); // Updated column titles
                     return;
                 }
 
-                database = newDatabase; // Keep in-memory for now, maybe remove later
+                database = formattedDatabase; // Keep in-memory for now, maybe remove later
                 try {
-                    await saveDatabaseToFirebase(newDatabase); // Save to Firebase
+                    await saveDatabaseToFirebase(formattedDatabase); // Save to Firebase
                     displayMessage('Database uploaded and saved to Firebase successfully!');
                     // Optionally refresh database view: viewDatabase();
                 } catch (firebaseError) {
@@ -751,7 +765,7 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // viewDatabase function - modified to fetch from Firebase
+        // viewDatabase function - modified to fetch from Firebase and use lowercase column titles
         async function viewDatabase() {
             const popup = document.getElementById('databasePopup');
             const tableBody = popup.querySelector('#databaseTable tbody');
@@ -762,9 +776,9 @@
                 querySnapshot.forEach(doc => {
                     const item = doc.data();
                     const row = tableBody.insertRow();
-                    row.insertCell().textContent = item.Code || '';
-                    row.insertCell().textContent = item.Name || '';
-                    row.insertCell().textContent = item['Supplier Name'] || '';
+                    row.insertCell().textContent = item.code || ''; // Updated column title
+                    row.insertCell().textContent = item.name || ''; // Updated column title
+                    row.insertCell().textContent = item['supplier name'] || ''; // Updated column title
                 });
                 popup.style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
@@ -782,7 +796,7 @@
             document.getElementById('overlay').style.display = 'none';
         }
 
-        // clearDatabase function - modified to clear Firebase database
+        // clearDatabase function - modified to clear Firebase database (No changes needed)
         async function clearDatabase() {
             try {
                 await clearFirebaseCollection(databaseCollectionName);
@@ -794,7 +808,7 @@
             }
         }
 
-        // getItemDetails function - modified to fetch from Firebase
+        // getItemDetails function - modified to fetch from Firebase and use lowercase column titles
         async function getItemDetails() {
             const code = document.getElementById('code').value.trim();
             clearError('codeError');
@@ -808,8 +822,8 @@
                 const docSnapshot = await db.collection(databaseCollectionName).doc(code).get();
                 if (docSnapshot.exists) {
                     const item = docSnapshot.data();
-                    document.getElementById('name').value = item.Name || '';
-                    document.getElementById('supplierName').value = item['Supplier Name'] || '';
+                    document.getElementById('name').value = item.name || ''; // Updated column title
+                    document.getElementById('supplierName').value = item['supplier name'] || ''; // Updated column title
                     displayMessage('Item details found.');
                 } else {
                     document.getElementById('name').value = '';
@@ -874,7 +888,7 @@
         }
 
 
-        // addToList function - modified to save to Firebase
+        // addToList function - modified to save to Firebase (No changes needed, column titles are from form input, not database)
         async function addToList() {
             const code = document.getElementById('code').value;
             const name = document.getElementById('name').value;
@@ -945,7 +959,7 @@
         }
 
 
-        // updateEntriesTable function - modified to fetch and display from in-memory entries array (can be further optimized to fetch directly from Firebase if needed)
+        // updateEntriesTable function - modified to fetch and display from in-memory entries array (can be further optimized to fetch directly from Firebase if needed) (No changes needed)
         function updateEntriesTable() {
             const entriesTableBody = document.querySelector('#entriesTable tbody');
             entriesTableBody.innerHTML = '';
@@ -972,7 +986,7 @@
             });
         }
 
-        // loadEntriesFromFirebase function - fetches entries from Firebase and updates in-memory entries array and table
+        // loadEntriesFromFirebase function - fetches entries from Firebase and updates in-memory entries array and table (No changes needed)
         async function loadEntriesFromFirebase() {
             entries = []; // Clear in-memory entries before loading from Firebase
             try {
@@ -988,7 +1002,7 @@
         }
 
 
-        // deleteEntry function - modified to delete from Firebase
+        // deleteEntry function - modified to delete from Firebase (No changes needed)
         async function deleteEntry(entryCode) {
             try {
                 await db.collection(entriesCollectionName).doc(entryCode).delete();
@@ -1000,7 +1014,7 @@
             }
         }
 
-        // clearAll function - modified to clear entries from Firebase
+        // clearAll function - modified to clear entries from Firebase (No changes needed)
         async function clearAll() {
             try {
                 await clearFirebaseCollection(entriesCollectionName);
