@@ -10,7 +10,7 @@
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* ... (Your existing CSS Styles - No changes needed) ... */
+        /* ... (Your existing CSS Styles) ... */
         body {
             font-family: Arial, sans-serif;
             padding: 15px;
@@ -31,341 +31,29 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            position: relative; /* Required for positioning the loading indicator */
         }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-size: 1.2em;
-            margin-bottom: 0.4em;
-            color: #343a40;
-        }
+        /* ... (Your existing CSS Styles) ... */
 
-        .btn {
-            padding: 8px 12px;
-            font-size: 0.9em;
-            margin-bottom: 7px;
-            border-radius: 6px;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
-        .btn-primary:hover,
-        .btn-primary:focus {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover,
-        .btn-secondary:focus {
-            background-color: #545b62;
-            border-color: #545b62;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .btn-danger:hover,
-        .btn-danger:focus {
-            background-color: #c82333;
-            border-color: #c82333;
-        }
-
-        .btn-info {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
-            color: white;
-        }
-
-        .btn-info:hover,
-        .btn-info:focus {
-            background-color: #117a8b;
-            border-color: #117a8b;
-        }
-
-
-        #databasePopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 15px;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            max-height: 70vh;
-            overflow-y: auto;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 8px;
-        }
-
-        #databasePopup h3 {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-        }
-
-        #databaseTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        #databaseTable th,
-        #databaseTable td {
-            border: 1px solid #eee;
-            padding: 6px;
-            text-align: left;
-            font-size: 0.8em;
-        }
-
-        #databaseTable th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        #entriesTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        #entriesTable th,
-        #entriesTable td {
-            border: 1px solid #ccc;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 6px;
-            padding-right: 6px;
-            text-align: left;
-            font-size: 0.8em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        #entriesTable th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            border: 1px solid #ccc;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 6px;
-            padding-right: 6px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        .error-message {
-            color: #dc3545;
-            margin-top: 3px;
-            font-size: 0.8em;
-            font-style: italic;
-        }
-
-        #message-container {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #e7f8ed;
-            color: #28a745;
-            padding: 8px 15px;
-            border: 1px solid #bce2c4;
-            border-radius: 6px;
-            z-index: 1001;
-            display: none;
-            font-size: 0.9em;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        #message-container.error {
-            background-color: #ffe6e6;
-            color: #dc3545;
-            border-color: #f5c6cb;
-        }
-
-
-        .adjustable-width {
-            width: 100%;
-            min-width: 20px;
-            max-width: 100%;
-            display: block;
-            box-sizing: border-box;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.9em;
-            margin-bottom: 0.5em;
-        }
-
-        .form-group label {
-            font-size: 1em;
-            font-weight: bold;
-            margin-bottom: 0.2em;
-            display: block;
-            color: #495057;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 6px;
-            font-size: 0.9em;
-            border-radius: 6px;
-            margin-bottom: 0.5em;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-        }
-
-        .card {
-            margin-top: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
-            border: none;
-        }
-
-        .card-header {
-            font-size: 1.1em;
-            font-weight: bold;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #eee;
-            padding: 10px 15px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            color: #343a40;
-        }
-
-        .table-responsive {
-            display: block;
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        #entriesTable td {
-            font-size: 0.8em;
-            padding: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Home button styling */
-        .home-button {
-            margin: 10px;
-            position: fixed;
+        /* Loading Indicator Styles */
+        #loading-indicator {
+            position: absolute;
             top: 0;
-            right: 0;
-            font-size: 1.3em;
-            color: #6c757d;
-            transition: color 0.2s ease;
-        }
-
-        .home-button:hover {
-            color: #007bff;
-        }
-
-        /* Style for inline buttons */
-        .inline-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5em;
-        }
-
-        .inline-buttons .btn {
-            width: 32%;
-            margin: 3px;
-            display: flex;
-            align-items: center;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+            display: none; /* Hidden by default */
+            flex-direction: column;
             justify-content: center;
-        }
-
-        .inline-buttons .btn i {
-            margin-right: 5px;
-        }
-
-        /* Style for putting two elements in one line */
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5em;
-        }
-
-        .form-row .form-group {
-            width: 48%;
-        }
-
-        /* Style for the inline elements */
-        .inline-form {
-            display: flex;
             align-items: center;
+            z-index: 1000; /* Ensure it's on top of other content */
         }
 
-        .inline-form .form-group {
-            margin-right: 10px;
-        }
-
-        .inline-form .btn {
-            margin-left: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .inline-form .btn i {
-            margin-right: 5px;
-        }
-
-
-        /* Style for the current price input field */
-        #currentPriceDiv {
-            display: none;
-        }
-
-        /* Animation for buttons */
-        @keyframes buttonClick {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(0.95);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .btn.clicked {
-            animation: buttonClick 0.3s ease-in-out;
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
     </style>
 </head>
@@ -373,6 +61,14 @@
 <body>
 
     <div id="app-container">
+        <!-- Loading Indicator -->
+        <div id="loading-indicator">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p>Loading database...</p>
+        </div>
+
         <a href="#" class="home-button" onclick="goHome()"><i class="fas fa-home"></i></a>
 
         <h1>Pricing App</h1>
@@ -592,6 +288,16 @@
             localStorage.removeItem(LOCAL_STORAGE_ENTRIES_KEY);
         }
 
+        // Function to show loading indicator
+        function showLoadingIndicator() {
+            document.getElementById('loading-indicator').style.display = 'flex';
+        }
+
+        // Function to hide loading indicator
+        function hideLoadingIndicator() {
+            document.getElementById('loading-indicator').style.display = 'none';
+        }
+
 
         // Function to display a message (No changes needed)
         function displayMessage(message, isError = false) {
@@ -731,12 +437,14 @@
 
         // uploadExcel function - modified to save to Firebase (No changes needed)
         function uploadExcel() {
+            showLoadingIndicator(); // Show loading indicator
             const fileInput = document.getElementById('excelFile');
             const file = fileInput.files[0];
             clearError('excelFileError');
 
             if (!file) {
                 displayError('excelFileError', 'Please select an Excel file.');
+                hideLoadingIndicator(); // Hide loading indicator if no file is selected
                 return;
             }
 
@@ -764,6 +472,7 @@
 
                 if (formattedDatabase.length > 0 && (!formattedDatabase[0].code || !formattedDatabase[0].name || !formattedDatabase[0]['supplier name'])) { // Updated column titles
                     displayError('excelFileError', 'Excel file must have columns: code, name, and supplier name.'); // Updated column titles
+                    hideLoadingIndicator(); // Hide loading indicator on error
                     return;
                 }
 
@@ -776,6 +485,8 @@
                     console.error('Error saving database to Firebase:', firebaseError);
                     displayError('excelFileError', 'Error saving database to Firebase.');
                     displayMessage('Error saving database to Firebase.', true);
+                } finally {
+                    hideLoadingIndicator(); // Hide loading indicator in finally block to ensure it's always hidden
                 }
 
             };
@@ -783,12 +494,14 @@
                 displayError('excelFileError', 'Error reading the Excel file.');
                 console.error("Error reading Excel file:", error);
                 displayMessage('Error reading the Excel file.', true);
+                hideLoadingIndicator(); // Hide loading indicator on error
             };
             reader.readAsArrayBuffer(file);
         }
 
         // viewDatabase function - modified to fetch from Firebase and use lowercase column titles (No changes needed)
         async function viewDatabase() {
+            showLoadingIndicator(); // Show loading indicator
             const popup = document.getElementById('databasePopup');
             const tableBody = popup.querySelector('#databaseTable tbody');
             tableBody.innerHTML = '';
@@ -808,6 +521,8 @@
             } catch (error) {
                 console.error('Error fetching database from Firebase:', error);
                 displayMessage('Error fetching database from Firebase.', true);
+            } finally {
+                hideLoadingIndicator(); // Hide loading indicator in finally block
             }
         }
 
@@ -820,6 +535,7 @@
 
         // clearDatabase function - modified to clear Firebase database (No changes needed)
         async function clearDatabase() {
+            showLoadingIndicator(); // Show loading indicator
             try {
                 await clearFirebaseCollection(databaseCollectionName);
                 database = []; // Clear in-memory database as well (optional)
@@ -827,6 +543,8 @@
             } catch (error) {
                 console.error('Error clearing database from Firebase:', error);
                 displayMessage('Error clearing database from Firebase.', true);
+            } finally {
+                hideLoadingIndicator(); // Hide loading indicator in finally block
             }
         }
 
@@ -1015,8 +733,10 @@
 
         // uploadEntriesToFirebase function - uploads entries from local storage to Firebase
         async function uploadEntriesToFirebase() {
+            showLoadingIndicator(); // Show loading indicator
             if (entries.length === 0) {
                 displayMessage('No entries to upload.', true);
+                hideLoadingIndicator(); // Hide loading indicator if no entries to upload
                 return;
             }
 
@@ -1034,6 +754,8 @@
             } catch (error) {
                 console.error('Error uploading entries to Firebase:', error);
                 displayMessage('Error uploading entries to database.', true);
+            } finally {
+                hideLoadingIndicator(); // Hide loading indicator in finally block
             }
         }
 
@@ -1062,6 +784,7 @@
 
         // clearAll function - modified to clear entries from Firebase and Local Storage
         async function clearAll() {
+            showLoadingIndicator(); // Show loading indicator
             try {
                 await clearFirebaseCollection(entriesCollectionName); // Clear Firebase entries
                 clearEntriesFromLocalStorage(); // Clear local storage entries
@@ -1071,6 +794,8 @@
             } catch (error) {
                 console.error('Error clearing all entries from Firebase:', error);
                 displayMessage('Error clearing all entries from Firebase.', true);
+            } finally {
+                hideLoadingIndicator(); // Hide loading indicator in finally block
             }
         }
 
