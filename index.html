@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kero Assistance - Stock Transfer Management</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
     <style>
         body {
@@ -60,26 +61,22 @@
             background-color: #e3f2fd;
         }
 
-        .location-container {
-            /* Added class for layout */
+        .location-container { /* Added class for layout */
             display: flex;
-            justify-content: space-around;
-            /* Distribute space evenly */
+            justify-content: space-around; /* Distribute space evenly */
             align-items: center;
-            margin-bottom: 15px;
-            /* Add some space between the selects */
+            margin-bottom: 15px; /* Add some space between the selects */
         }
 
         .location-container select {
-            width: 45%;
-            /* Adjust width for better spacing */
+            width: 45%;  /* Adjust width for better spacing */
             padding: 10px;
             border: 1px solid #bbdefb;
             border-radius: 5px;
             box-sizing: border-box;
-            font-size: 16px;
-            /* Adjust font-size for better readability */
+            font-size: 16px;  /* Adjust font-size for better readability */
         }
+
 
         input[type="file"],
         input[type="text"],
@@ -144,7 +141,8 @@
 
 <body>
 
-    <div class="version">v 1.2 Firebase Auto Load</div>
+    <div class="version">v 1.2</div>
+
 
     <div id="appContent" class="container">
         <h1>
@@ -154,52 +152,46 @@
         </h1>
 
         <div class="section">
-            <h2>Database Load from Google Sheet</h2>
-            <button id="loadDatabaseButton" disabled>Load Database</button> <span id="databaseLoadStatus">Loading database...</span>
-        </div>
-
-        <div class="section">
             <h2>Quantity Upload</h2>
 
-            <div class="location-container">
-                <!-- Wrapped selects in a container -->
-                <select id="locationFrom" class="location-select">
-                    <option value="">Select Location From</option>
-                    <option value="جاردنز 101">جاردنز 101</option>
-                    <option value="تلال السخنة 102">تلال السخنة 102</option>
-                    <option value="ستيلا 103">ستيلا 103</option>
-                    <option value="الدبلو 104">الدبلو 104</option>
-                    <option value="تلال الساحل 105">تلال الساحل 105</option>
-                    <option value="سوان لك 106">سوان لك 106</option>
-                    <option value="كاسكادا 107">كاسكادا 107</option>
-                    <option value="لافيستا باي 108">لافيستا باي 108</option>
-                    <option value="راس الحكمة 109">راس الحكمة 109</option>
-                    <option value="لازوردي 110">لازوردي 110</option>
-                    <option value="النادي 111">النادي 111</option>
-                    <option value="زايد 112">زايد 112</option>
-                    <option value="القطامية 115">القطامية 115</option>
-                    <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
-                    <option value="مخزن الساحل 202">مخزن الساحل 202</option>
-                </select>
+            <div class="location-container">  <!-- Wrapped selects in a container -->
+              <select id="locationFrom" class="location-select">
+                  <option value="">Select Location From</option>
+                  <option value="جاردنز 101">جاردنز 101</option>
+                  <option value="تلال السخنة 102">تلال السخنة 102</option>
+                  <option value="ستيلا 103">ستيلا 103</option>
+                  <option value="الدبلو 104">الدبلو 104</option>
+                  <option value="تلال الساحل 105">تلال الساحل 105</option>
+                  <option value="سوان لك 106">سوان لك 106</option>
+                  <option value="كاسكادا 107">كاسكادا 107</option>
+                  <option value="لافيستا باي 108">لافيستا باي 108</option>
+                  <option value="راس الحكمة 109">راس الحكمة 109</option>
+                  <option value="لازوردي 110">لازوردي 110</option>
+                  <option value="النادي 111">النادي 111</option>
+                  <option value="زايد 112">زايد 112</option>
+                  <option value="القطامية 115">القطامية 115</option>
+                  <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
+                  <option value="مخزن الساحل 202">مخزن الساحل 202</option>
+              </select>
 
-                <select id="locationTo" class="location-select">
-                    <option value="">Select Location To</option>
-                    <option value="جاردنز 101">جاردنز 101</option>
-                    <option value="تلال السخنة 102">تلال السخنة 102</option>
-                    <option value="ستيلا 103">ستيلا 103</option>
-                    <option value="الدبلو 104">الدبلو 104</option>
-                    <option value="تلال الساحل 105">تلال الساحل 105</option>
-                    <option value="سوان لك 106">سوان لك 106</option>
-                    <option value="كاسكادا 107">كاسكادا 107</option>
-                    <option value="لافيستا باي 108">لافيستا باي 108</option>
-                    <option value="راس الحكمة 109">راس الحكمة 109</option>
-                    <option value="لازوردي 110">لازوردي 110</option>
-                    <option value="النادي 111">النادي 111</option>
-                    <option value="زايد 112">زايد 112</option>
-                    <option value="القطامية 115">القطامية 115</option>
-                    <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
-                    <option value="مخزن الساحل 202">مخزن الساحل 202</option>
-                </select>
+              <select id="locationTo" class="location-select">
+                  <option value="">Select Location To</option>
+                  <option value="جاردنز 101">جاردنز 101</option>
+                  <option value="تلال السخنة 102">تلال السخنة 102</option>
+                  <option value="ستيلا 103">ستيلا 103</option>
+                  <option value="الدبلو 104">الدبلو 104</option>
+                  <option value="تلال الساحل 105">تلال الساحل 105</option>
+                  <option value="سوان لك 106">سوان لك 106</option>
+                  <option value="كاسكادا 107">كاسكادا 107</option>
+                  <option value="لافيستا باي 108">لافيستا باي 108</option>
+                  <option value="راس الحكمة 109">راس الحكمة 109</option>
+                  <option value="لازوردي 110">لازوردي 110</option>
+                  <option value="النادي 111">النادي 111</option>
+                  <option value="زايد 112">زايد 112</option>
+                  <option value="القطامية 115">القطامية 115</option>
+                  <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
+                  <option value="مخزن الساحل 202">مخزن الساحل 202</option>
+              </select>
             </div>
 
             <input type="file" id="quantityFile" accept=".xlsx" style="display: none;">
@@ -207,34 +199,120 @@
             <button id="clearQuantity">Clear Quantity</button>
         </div>
 
-        <button id="processDownloadButton" disabled>Process Data and Download Results</button>
+        <button id="processDownloadButton">Process Data and Download Results</button>
 
         <div id="message"></div>
     </div>
 
     <script>
-        // Define googleSheetURL in the global scope
-        const googleSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv";
-
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
 
             let databaseData = null;
             let quantityData = null;
 
-            const firebaseConfig = {
-                apiKey: "AIzaSyBWEzTf74KZ9jMEfcwY3AU4yYSaZRuE7R4",
-                authDomain: "stock-transfere.firebaseapp.com",
-                projectId: "stock-transfere",
-                storageBucket: "stock-transfere.firebasestorage.app",
-                messagingSenderId: "934685032211",
-                appId: "1:934685032211:web:dea1e6ea62344709fbe4e6",
-                measurementId: "G-RKZSR9G48D"
+            // Firebase configuration - Replace with your actual Firebase project settings
+           const firebaseConfig = {
+  apiKey: "AIzaSyBWEzTf74KZ9jMEfcwY3AU4yYSaZRuE7R4",
+  authDomain: "stock-transfere.firebaseapp.com",
+  databaseURL: "https://stock-transfere-default-rtdb.firebaseio.com",
+  projectId: "stock-transfere",
+  storageBucket: "stock-transfere.firebasestorage.app",
+  messagingSenderId: "934685032211",
+  appId: "1:934685032211:web:dea1e6ea62344709fbe4e6",
+  measurementId: "G-RKZSR9G48D"
             };
 
+            // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const databaseCollection = db.collection('stockDatabase'); // Choose your Firestore collection name
 
-            document.getElementById('loadDatabaseButton').addEventListener('click', loadDatabaseFromGoogleSheet);
-            document.getElementById('uploadQuantityButton').addEventListener('click', function () {
+            // Google Sheet URL - Replace with your published Google Sheet CSV URL
+            const googleSheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv";
+
+            // Function to load database from Google Sheet and store in Firebase
+            async function loadDatabaseFromGoogleSheet() {
+                showMessage('Loading database...', false);
+                try {
+                    const response = await fetch(googleSheetCSVUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const csvText = await response.text();
+                    const jsonData = csvToJson(csvText); // Function to convert CSV to JSON
+
+                    if (!jsonData || jsonData.length === 0) {
+                        throw new Error('No data fetched from Google Sheet or CSV is empty.');
+                    }
+
+                    // Clear existing data in Firestore collection (optional - remove if you want to append)
+                    const querySnapshot = await databaseCollection.get();
+                    querySnapshot.forEach(doc => {
+                        databaseCollection.doc(doc.id).delete();
+                    });
+
+
+                    // Upload data to Firestore
+                    for (const item of jsonData) {
+                        await databaseCollection.add(item); // Firestore auto-generates document IDs
+                    }
+
+
+                    showMessage('Database loaded successfully from Google Sheet!', true);
+                    await fetchDatabaseFromFirestore(); // Fetch and set databaseData after loading
+                } catch (error) {
+                    showMessage(`Error loading database: ${error.message}`);
+                    console.error("Error loading database from Google Sheet:", error);
+                }
+            }
+
+            // Function to fetch database from Firestore
+            async function fetchDatabaseFromFirestore() {
+                showMessage('Fetching database from Firestore...', false);
+                try {
+                    const querySnapshot = await databaseCollection.get();
+                    const fetchedData = [];
+                    querySnapshot.forEach(doc => {
+                        fetchedData.push(doc.data());
+                    });
+
+                    if (fetchedData.length > 0) {
+                        // Reconstruct headers based on the first document's keys
+                        const headers = Object.keys(fetchedData[0]);
+                        databaseData = [headers, ...fetchedData.map(item => headers.map(header => item[header]))];
+                        showMessage('Database fetched from Firestore.', true);
+                    } else {
+                        databaseData = null; // No data in Firestore
+                        showMessage('No data found in Firestore database.', false);
+                    }
+
+                } catch (error) {
+                    showMessage(`Error fetching database from Firestore: ${error.message}`);
+                    console.error("Error fetching database from Firestore:", error);
+                }
+            }
+
+
+            // CSV to JSON conversion function (simple, adjust as needed for complex CSV)
+            function csvToJson(csv) {
+                const lines = csv.trim().split('\n');
+                if (lines.length <= 1) return []; // No data rows
+                const headers = lines[0].split(',').map(header => header.trim()); // Assuming comma-separated
+                const result = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const obj = {};
+                    const currentLine = lines[i].split(','); // Assuming comma-separated
+                    for (let j = 0; j < headers.length; j++) {
+                        obj[headers[j]] = currentLine[j] ? currentLine[j].trim() : ''; // Handle missing values
+                    }
+                    result.push(obj);
+                }
+                return result;
+            }
+
+
+            document.getElementById('uploadQuantityButton').addEventListener('click', function() {
                 document.getElementById('quantityFile').click();
             });
 
@@ -242,64 +320,24 @@
             document.getElementById('clearQuantity').addEventListener('click', clearQuantity);
             document.getElementById('processDownloadButton').addEventListener('click', processDataAndDownload);
 
-            // Load database automatically on page load
+            // Load database on page load
             loadDatabaseFromGoogleSheet();
+
 
         }); // end of doc ready
 
-        async function loadDatabaseFromGoogleSheet() {
-            const loadDatabaseButton = document.getElementById('loadDatabaseButton');
-            const processDownloadButton = document.getElementById('processDownloadButton');
-            const databaseLoadStatus = document.getElementById('databaseLoadStatus');
 
-            loadDatabaseButton.disabled = true;
-            processDownloadButton.disabled = true;
-            databaseLoadStatus.textContent = 'Loading database from Google Sheet...';
-
-            try {
-                // **Using api.allorigins.win CORS PROXY**
-                const corsProxyUrl = 'https://api.allorigins.win/raw?url=';
-                const response = await fetch(corsProxyUrl + googleSheetURL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const csvText = await response.text();
-                databaseData = parseCSV(csvText);
-                showMessage('Database loaded successfully from Google Sheet!', true);
-                databaseLoadStatus.textContent = 'Database loaded successfully.';
-                processDownloadButton.disabled = false;
-
-            } catch (error) {
-                console.error("Error loading database from Google Sheet:", error);
-                showMessage(`Error loading database: ${error.message}`);
-                databaseLoadStatus.textContent = 'Error loading database.';
-                databaseData = null; // Ensure databaseData is null in case of error
-            } finally {
-                loadDatabaseButton.disabled = false; // Enable button after attempt, whether success or fail
-            }
-        }
-
-        function parseCSV(csvText) {
-            const lines = csvText.trim().split('\n');
-            const headers = lines[0].split(',').map(header => header.trim().toLowerCase().replace(/['"]+/g, '')); //remove quotes and trim and lowercase
-            const data = [];
-            for (let i = 1; i < lines.length; i++) {
-                const currentLine = lines[i].split(',');
-                const row = {};
-                for (let j = 0; j < headers.length; j++) {
-                    row[headers[j]] = currentLine[j] ? currentLine[j].trim().replace(/['"]+/g, '') : ''; //remove quotes and trim
-                }
-                data.push(row);
-            }
-            return data;
-        }
 
         function handleQuantityUpload(event) {
+            handleFileUpload(event, 'quantityData', 'Quantity', ['code', 'quantity']);
+        }
+
+        function handleFileUpload(event, storageKey, sheetName, requiredHeaders) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {
@@ -309,7 +347,7 @@
                     const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
                     if (!sheet) {
-                        throw new Error(`Sheet "Quantity" not found.`);
+                        throw new Error(`Sheet "${sheetName}" not found.`);
                     }
 
                     const jsonData = XLSX.utils.sheet_to_json(sheet, {
@@ -317,32 +355,26 @@
                     });
 
                     const headers = jsonData[0].map(header => header.toLowerCase());
-                    const requiredHeaders = ['code', 'quantity'];
                     const missingHeaders = requiredHeaders.filter(header => !headers.includes(header));
 
                     if (missingHeaders.length > 0) {
-                        throw new Error(`Missing required headers: ${missingHeaders.join(', ')} in "Quantity" sheet.`);
+                        throw new Error(`Missing required headers: ${missingHeaders.join(', ')} in "${sheetName}" sheet.`);
                     }
 
-                    quantityData = jsonData.slice(1).map(row => { // Skip header row and process data rows
-                        let rowObject = {};
-                        headers.forEach((header, index) => {
-                            rowObject[header] = row[index];
-                        });
-                        return rowObject;
-                    });
+                    quantityData = jsonData; // Store quantity data in variable
+                    showMessage(`${sheetName} uploaded successfully!`, true);
 
-                    showMessage(`Quantity uploaded successfully!`, true);
 
                 } catch (error) {
-                    showMessage(`Error uploading Quantity: ${error.message}`);
+                    showMessage(`Error uploading ${sheetName}: ${error.message}`);
                 }
             };
-            reader.onerror = function (error) {
+            reader.onerror = function(error) {
                 showMessage(`Error reading file: ${error.message}`);
             };
             reader.readAsArrayBuffer(file);
         }
+
 
         function clearQuantity() {
             document.getElementById('quantityFile').value = '';
@@ -350,7 +382,7 @@
             showMessage('Quantity cleared!', true);
         }
 
-        function processDataAndDownload() {
+        async function processDataAndDownload() {
 
             const locationFromValue = document.getElementById('locationFrom').value;
             const locationToValue = document.getElementById('locationTo').value;
@@ -360,7 +392,7 @@
                 return;
             }
             if (!databaseData) {
-                showMessage('Database not loaded yet. Please wait or try to reload.');
+                showMessage('Database is still loading or failed to load. Please wait or refresh.');
                 return;
             }
             if (!quantityData) {
@@ -369,34 +401,45 @@
             }
 
             try {
-
                 const results = [];
                 const unmatched = [];
 
-                const codeColumnDataHeader = 'code'; // Column title in database sheet
-                const barcodeColumnDataHeader = 'barcode'; // Column title in database sheet
-                const nameColumnDataHeader = 'name'; // Column title in database sheet
+                const dataHeaders = databaseData[0].map(header => header.toLowerCase());
 
-                const codeColumnQuantityHeader = 'code'; // Column title in quantity sheet
-                const quantityColumnQuantityHeader = 'quantity'; // Column title in quantity sheet
+                const codeColumnData = dataHeaders.findIndex(header => header === 'code');
+                const barcodeColumnData = dataHeaders.findIndex(header => header === 'barcode');
+                const nameColumnData = dataHeaders.findIndex(header => header === 'name');
 
-                for (const quantityRow of quantityData) {
-                    const code = String(quantityRow[codeColumnQuantityHeader]).trim();
-                    const quantity = quantityRow[quantityColumnQuantityHeader];
+                if (codeColumnData === -1 || barcodeColumnData === -1 || nameColumnData === -1) {
+                    throw new Error('Required columns ("Code", "Barcode", "Name") not found in Data sheet.');
+                }
+
+                const quantityHeaders = quantityData[0].map(header => header.toLowerCase());
+                const codeColumnQuantity = quantityHeaders.findIndex(header => header === 'code');
+                const quantityColumnQuantity = quantityHeaders.findIndex(header => header === 'quantity');
+
+                if (codeColumnQuantity === -1 || quantityColumnQuantity === -1) {
+                    throw new Error('Required columns ("Code", "Quantity") not found in Quantity sheet.');
+                }
+
+                for (let i = 1; i < quantityData.length; i++) {
+                    const quantityRow = quantityData[i];
+                    const code = String(quantityRow[codeColumnQuantity]).trim();
+                    const quantity = quantityRow[quantityColumnQuantity];
 
                     if (!code) continue;
 
                     let found = false;
-                    for (const dataRow of databaseData) {
-                        if (String(dataRow[codeColumnDataHeader]).trim() === code) {
+                    for (let j = 1; j < databaseData.length; j++) {
+                        const dataRow = databaseData[j];
+                        if (String(dataRow[codeColumnData]).trim() === code) {
                             results.push({
                                 Code: code,
-                                Barcode: dataRow[barcodeColumnDataHeader],
-                                Name: dataRow[nameColumnDataHeader],
+                                Barcode: dataRow[barcodeColumnData],
+                                Name: dataRow[nameColumnData],
                                 Quantity: quantity
                             });
                             found = true;
-                            break; // Exit inner loop once found
                         }
                     }
 
@@ -418,17 +461,17 @@
                 const resultsSheet = XLSX.utils.aoa_to_sheet(resultsData);
 
                 const wscols = [{
-                    wch: 10
-                },
-                {
-                    wch: 20
-                },
-                {
-                    wch: 50
-                },
-                {
-                    wch: 10
-                }
+                        wch: 10
+                    },
+                    {
+                        wch: 20
+                    },
+                    {
+                        wch: 50
+                    },
+                    {
+                        wch: 10
+                    }
                 ];
                 resultsSheet['!cols'] = wscols;
 
