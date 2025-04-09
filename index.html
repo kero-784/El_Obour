@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale: 1.0">
     <title>Kero Assistance - Stock Transfer Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
@@ -60,22 +60,26 @@
             background-color: #e3f2fd;
         }
 
-        .location-container { /* Added class for layout */
+        .location-container {
+            /* Added class for layout */
             display: flex;
-            justify-content: space-around; /* Distribute space evenly */
+            justify-content: space-around;
+            /* Distribute space evenly */
             align-items: center;
-            margin-bottom: 15px; /* Add some space between the selects */
+            margin-bottom: 15px;
+            /* Add some space between the selects */
         }
 
         .location-container select {
-            width: 45%;  /* Adjust width for better spacing */
+            width: 45%;
+            /* Adjust width for better spacing */
             padding: 10px;
             border: 1px solid #bbdefb;
             border-radius: 5px;
             box-sizing: border-box;
-            font-size: 16px;  /* Adjust font-size for better readability */
+            font-size: 16px;
+            /* Adjust font-size for better readability */
         }
-
 
         input[type="file"],
         input[type="text"],
@@ -142,7 +146,6 @@
 
     <div class="version">v 1.2 Firebase Auto Load</div>
 
-
     <div id="appContent" class="container">
         <h1>
             <span id="kero-assistance">Kero Assistance</span>
@@ -158,44 +161,45 @@
         <div class="section">
             <h2>Quantity Upload</h2>
 
-            <div class="location-container">  <!-- Wrapped selects in a container -->
-              <select id="locationFrom" class="location-select">
-                  <option value="">Select Location From</option>
-                  <option value="جاردنز 101">جاردنز 101</option>
-                  <option value="تلال السخنة 102">تلال السخنة 102</option>
-                  <option value="ستيلا 103">ستيلا 103</option>
-                  <option value="الدبلو 104">الدبلو 104</option>
-                  <option value="تلال الساحل 105">تلال الساحل 105</option>
-                  <option value="سوان لك 106">سوان لك 106</option>
-                  <option value="كاسكادا 107">كاسكادا 107</option>
-                  <option value="لافيستا باي 108">لافيستا باي 108</option>
-                  <option value="راس الحكمة 109">راس الحكمة 109</option>
-                  <option value="لازوردي 110">لازوردي 110</option>
-                  <option value="النادي 111">النادي 111</option>
-                  <option value="زايد 112">زايد 112</option>
-                  <option value="القطامية 115">القطامية 115</option>
-                  <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
-                  <option value="مخزن الساحل 202">مخزن الساحل 202</option>
-              </select>
+            <div class="location-container">
+                <!-- Wrapped selects in a container -->
+                <select id="locationFrom" class="location-select">
+                    <option value="">Select Location From</option>
+                    <option value="جاردنز 101">جاردنز 101</option>
+                    <option value="تلال السخنة 102">تلال السخنة 102</option>
+                    <option value="ستيلا 103">ستيلا 103</option>
+                    <option value="الدبلو 104">الدبلو 104</option>
+                    <option value="تلال الساحل 105">تلال الساحل 105</option>
+                    <option value="سوان لك 106">سوان لك 106</option>
+                    <option value="كاسكادا 107">كاسكادا 107</option>
+                    <option value="لافيستا باي 108">لافيستا باي 108</option>
+                    <option value="راس الحكمة 109">راس الحكمة 109</option>
+                    <option value="لازوردي 110">لازوردي 110</option>
+                    <option value="النادي 111">النادي 111</option>
+                    <option value="زايد 112">زايد 112</option>
+                    <option value="القطامية 115">القطامية 115</option>
+                    <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
+                    <option value="مخزن الساحل 202">مخزن الساحل 202</option>
+                </select>
 
-              <select id="locationTo" class="location-select">
-                  <option value="">Select Location To</option>
-                  <option value="جاردنز 101">جاردنز 101</option>
-                  <option value="تلال السخنة 102">تلال السخنة 102</option>
-                  <option value="ستيلا 103">ستيلا 103</option>
-                  <option value="الدبلو 104">الدبلو 104</option>
-                  <option value="تلال الساحل 105">تلال الساحل 105</option>
-                  <option value="سوان لك 106">سوان لك 106</option>
-                  <option value="كاسكادا 107">كاسكادا 107</option>
-                  <option value="لافيستا باي 108">لافيستا باي 108</option>
-                  <option value="راس الحكمة 109">راس الحكمة 109</option>
-                  <option value="لازوردي 110">لازوردي 110</option>
-                  <option value="النادي 111">النادي 111</option>
-                  <option value="زايد 112">زايد 112</option>
-                  <option value="القطامية 115">القطامية 115</option>
-                  <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
-                  <option value="مخزن الساحل 202">مخزن الساحل 202</option>
-              </select>
+                <select id="locationTo" class="location-select">
+                    <option value="">Select Location To</option>
+                    <option value="جاردنز 101">جاردنز 101</option>
+                    <option value="تلال السخنة 102">تلال السخنة 102</option>
+                    <option value="ستيلا 103">ستيلا 103</option>
+                    <option value="الدبلو 104">الدبلو 104</option>
+                    <option value="تلال الساحل 105">تلال الساحل 105</option>
+                    <option value="سوان لك 106">سوان لك 106</option>
+                    <option value="كاسكادا 107">كاسكادا 107</option>
+                    <option value="لافيستا باي 108">لافيستا باي 108</option>
+                    <option value="راس الحكمة 109">راس الحكمة 109</option>
+                    <option value="لازوردي 110">لازوردي 110</option>
+                    <option value="النادي 111">النادي 111</option>
+                    <option value="زايد 112">زايد 112</option>
+                    <option value="القطامية 115">القطامية 115</option>
+                    <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
+                    <option value="مخزن الساحل 202">مخزن الساحل 202</option>
+                </select>
             </div>
 
             <input type="file" id="quantityFile" accept=".xlsx" style="display: none;">
@@ -209,28 +213,28 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Define googleSheetURL in the global scope
+        const googleSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv";
+
+        document.addEventListener('DOMContentLoaded', function () {
 
             let databaseData = null;
             let quantityData = null;
 
-            const googleSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv";
-
-
             const firebaseConfig = {
-              apiKey: "AIzaSyBWEzTf74KZ9jMEfcwY3AU4yYSaZRuE7R4",
-              authDomain: "stock-transfere.firebaseapp.com",
-              projectId: "stock-transfere",
-              storageBucket: "stock-transfere.firebasestorage.app",
-              messagingSenderId: "934685032211",
-              appId: "1:934685032211:web:dea1e6ea62344709fbe4e6",
-              measurementId: "G-RKZSR9G48D"
+                apiKey: "AIzaSyBWEzTf74KZ9jMEfcwY3AU4yYSaZRuE7R4",
+                authDomain: "stock-transfere.firebaseapp.com",
+                projectId: "stock-transfere",
+                storageBucket: "stock-transfere.firebasestorage.app",
+                messagingSenderId: "934685032211",
+                appId: "1:934685032211:web:dea1e6ea62344709fbe4e6",
+                measurementId: "G-RKZSR9G48D"
             };
 
             firebase.initializeApp(firebaseConfig);
 
             document.getElementById('loadDatabaseButton').addEventListener('click', loadDatabaseFromGoogleSheet);
-            document.getElementById('uploadQuantityButton').addEventListener('click', function() {
+            document.getElementById('uploadQuantityButton').addEventListener('click', function () {
                 document.getElementById('quantityFile').click();
             });
 
@@ -241,9 +245,7 @@
             // Load database automatically on page load
             loadDatabaseFromGoogleSheet();
 
-
         }); // end of doc ready
-
 
         async function loadDatabaseFromGoogleSheet() {
             const loadDatabaseButton = document.getElementById('loadDatabaseButton');
@@ -254,9 +256,10 @@
             processDownloadButton.disabled = true;
             databaseLoadStatus.textContent = 'Loading database from Google Sheet...';
 
-
             try {
-                const response = await fetch(googleSheetURL);
+                // **CORS Proxy URL is added here**
+                const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const response = await fetch(corsProxyUrl + googleSheetURL);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -266,17 +269,15 @@
                 databaseLoadStatus.textContent = 'Database loaded successfully.';
                 processDownloadButton.disabled = false;
 
-
             } catch (error) {
                 console.error("Error loading database from Google Sheet:", error);
                 showMessage(`Error loading database: ${error.message}`);
                 databaseLoadStatus.textContent = 'Error loading database.';
                 databaseData = null; // Ensure databaseData is null in case of error
             } finally {
-                 loadDatabaseButton.disabled = false; // Enable button after attempt, whether success or fail
+                loadDatabaseButton.disabled = false; // Enable button after attempt, whether success or fail
             }
         }
-
 
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
@@ -293,13 +294,12 @@
             return data;
         }
 
-
         function handleQuantityUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {
@@ -332,20 +332,17 @@
                         return rowObject;
                     });
 
-
                     showMessage(`Quantity uploaded successfully!`, true);
-
 
                 } catch (error) {
                     showMessage(`Error uploading Quantity: ${error.message}`);
                 }
             };
-            reader.onerror = function(error) {
+            reader.onerror = function (error) {
                 showMessage(`Error reading file: ${error.message}`);
             };
             reader.readAsArrayBuffer(file);
         }
-
 
         function clearQuantity() {
             document.getElementById('quantityFile').value = '';
@@ -354,7 +351,6 @@
         }
 
         function processDataAndDownload() {
-
 
             const locationFromValue = document.getElementById('locationFrom').value;
             const locationToValue = document.getElementById('locationTo').value;
@@ -377,14 +373,12 @@
                 const results = [];
                 const unmatched = [];
 
-
                 const codeColumnDataHeader = 'code'; // Column title in database sheet
                 const barcodeColumnDataHeader = 'barcode'; // Column title in database sheet
                 const nameColumnDataHeader = 'name'; // Column title in database sheet
 
                 const codeColumnQuantityHeader = 'code'; // Column title in quantity sheet
                 const quantityColumnQuantityHeader = 'quantity'; // Column title in quantity sheet
-
 
                 for (const quantityRow of quantityData) {
                     const code = String(quantityRow[codeColumnQuantityHeader]).trim();
@@ -424,17 +418,17 @@
                 const resultsSheet = XLSX.utils.aoa_to_sheet(resultsData);
 
                 const wscols = [{
-                        wch: 10
-                    },
-                    {
-                        wch: 20
-                    },
-                    {
-                        wch: 50
-                    },
-                    {
-                        wch: 10
-                    }
+                    wch: 10
+                },
+                {
+                    wch: 20
+                },
+                {
+                    wch: 50
+                },
+                {
+                    wch: 10
+                }
                 ];
                 resultsSheet['!cols'] = wscols;
 
