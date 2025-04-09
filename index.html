@@ -105,13 +105,13 @@
             background-color: #00796b;
         }
 
-        #processDownloadButton {
+        #processDataButton {
             font-size: 18px;
             padding: 16px 32px;
             background-color: #4caf50;
         }
 
-        #processDownloadButton:hover {
+        #processDataButton:hover {
             background-color: #388e3c;
         }
 
@@ -135,13 +135,39 @@
             padding: 6px 12px !important;
             height: auto !important;
         }
+
+        .results-section {
+            margin-top: 30px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #e0e0e0;
+        }
+
+
     </style>
 
 </head>
 
 <body>
 
-    <div class="version">v 1.2</div>
+    <div class="version">v 1.3</div>
 
 
     <div id="appContent" class="container">
@@ -199,15 +225,28 @@
             <button id="clearQuantity">Clear Quantity</button>
         </div>
 
-        <button id="processDownloadButton">Process Data and Download Results</button>
+        <button id="processDataButton">Process Data and Display Results</button>
 
         <div id="message"></div>
+
+        <div id="resultsSection" class="results-section" style="display:none;">
+            <h2>Results</h2>
+            <div id="resultsDisplay">
+                <!-- Results table will be inserted here -->
+            </div>
+        </div>
+
+        <div id="unmatchedSection" class="results-section" style="display:none;">
+            <h2>Unmatched Items</h2>
+            <div id="unmatchedDisplay">
+                <!-- Unmatched table will be inserted here -->
+            </div>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            let databaseData = null;
             let quantityData = null;
 
             // Firebase configuration - Replace with your actual Firebase project settings
@@ -227,90 +266,6 @@
             const db = firebase.firestore();
             const databaseCollection = db.collection('stockDatabase'); // Choose your Firestore collection name
 
-            // Google Sheet URL - Replace with your published Google Sheet CSV URL
-            const googleSheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv";
-
-            // Function to load database from Google Sheet and store in Firebase
-            async function loadDatabaseFromGoogleSheet() {
-                showMessage('Loading database...', false);
-                try {
-                    const response = await fetch(googleSheetCSVUrl);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const csvText = await response.text();
-                    const jsonData = csvToJson(csvText); // Function to convert CSV to JSON
-
-                    if (!jsonData || jsonData.length === 0) {
-                        throw new Error('No data fetched from Google Sheet or CSV is empty.');
-                    }
-
-                    // Clear existing data in Firestore collection (optional - remove if you want to append)
-                    const querySnapshot = await databaseCollection.get();
-                    querySnapshot.forEach(doc => {
-                        databaseCollection.doc(doc.id).delete();
-                    });
-
-
-                    // Upload data to Firestore
-                    for (const item of jsonData) {
-                        await databaseCollection.add(item); // Firestore auto-generates document IDs
-                    }
-
-
-                    showMessage('Database loaded successfully from Google Sheet!', true);
-                    await fetchDatabaseFromFirestore(); // Fetch and set databaseData after loading
-                } catch (error) {
-                    showMessage(`Error loading database: ${error.message}`);
-                    console.error("Error loading database from Google Sheet:", error);
-                }
-            }
-
-            // Function to fetch database from Firestore
-            async function fetchDatabaseFromFirestore() {
-                showMessage('Fetching database from Firestore...', false);
-                try {
-                    const querySnapshot = await databaseCollection.get();
-                    const fetchedData = [];
-                    querySnapshot.forEach(doc => {
-                        fetchedData.push(doc.data());
-                    });
-
-                    if (fetchedData.length > 0) {
-                        // Reconstruct headers based on the first document's keys
-                        const headers = Object.keys(fetchedData[0]);
-                        databaseData = [headers, ...fetchedData.map(item => headers.map(header => item[header]))];
-                        showMessage('Database fetched from Firestore.', true);
-                    } else {
-                        databaseData = null; // No data in Firestore
-                        showMessage('No data found in Firestore database.', false);
-                    }
-
-                } catch (error) {
-                    showMessage(`Error fetching database from Firestore: ${error.message}`);
-                    console.error("Error fetching database from Firestore:", error);
-                }
-            }
-
-
-            // CSV to JSON conversion function (simple, adjust as needed for complex CSV)
-            function csvToJson(csv) {
-                const lines = csv.trim().split('\n');
-                if (lines.length <= 1) return []; // No data rows
-                const headers = lines[0].split(',').map(header => header.trim()); // Assuming comma-separated
-                const result = [];
-
-                for (let i = 1; i < lines.length; i++) {
-                    const obj = {};
-                    const currentLine = lines[i].split(','); // Assuming comma-separated
-                    for (let j = 0; j < headers.length; j++) {
-                        obj[headers[j]] = currentLine[j] ? currentLine[j].trim() : ''; // Handle missing values
-                    }
-                    result.push(obj);
-                }
-                return result;
-            }
-
 
             document.getElementById('uploadQuantityButton').addEventListener('click', function() {
                 document.getElementById('quantityFile').click();
@@ -318,10 +273,7 @@
 
             document.getElementById('quantityFile').addEventListener('change', handleQuantityUpload);
             document.getElementById('clearQuantity').addEventListener('click', clearQuantity);
-            document.getElementById('processDownloadButton').addEventListener('click', processDataAndDownload);
-
-            // Load database on page load
-            loadDatabaseFromGoogleSheet();
+            document.getElementById('processDataButton').addEventListener('click', processDataAndDisplay);
 
 
         }); // end of doc ready
@@ -382,7 +334,7 @@
             showMessage('Quantity cleared!', true);
         }
 
-        async function processDataAndDownload() {
+        async function processDataAndDisplay() {
 
             const locationFromValue = document.getElementById('locationFrom').value;
             const locationToValue = document.getElementById('locationTo').value;
@@ -391,29 +343,17 @@
                 showMessage('Please select both "Location From" and "Location To".');
                 return;
             }
-            if (!databaseData) {
-                showMessage('Database is still loading or failed to load. Please wait or refresh.');
-                return;
-            }
+
             if (!quantityData) {
                 showMessage('Please upload the quantity data first!');
                 return;
             }
 
+            showMessage('Processing data...', false);
+            const results = [];
+            const unmatched = [];
+
             try {
-                const results = [];
-                const unmatched = [];
-
-                const dataHeaders = databaseData[0].map(header => header.toLowerCase());
-
-                const codeColumnData = dataHeaders.findIndex(header => header === 'code');
-                const barcodeColumnData = dataHeaders.findIndex(header => header === 'barcode');
-                const nameColumnData = dataHeaders.findIndex(header => header === 'name');
-
-                if (codeColumnData === -1 || barcodeColumnData === -1 || nameColumnData === -1) {
-                    throw new Error('Required columns ("Code", "Barcode", "Name") not found in Data sheet.');
-                }
-
                 const quantityHeaders = quantityData[0].map(header => header.toLowerCase());
                 const codeColumnQuantity = quantityHeaders.findIndex(header => header === 'code');
                 const quantityColumnQuantity = quantityHeaders.findIndex(header => header === 'quantity');
@@ -429,74 +369,104 @@
 
                     if (!code) continue;
 
-                    let found = false;
-                    for (let j = 1; j < databaseData.length; j++) {
-                        const dataRow = databaseData[j];
-                        if (String(dataRow[codeColumnData]).trim() === code) {
-                            results.push({
+                    try {
+                        const querySnapshot = await databaseCollection
+                            .where('code', '==', code)
+                            .limit(1)
+                            .get();
+
+                        if (!querySnapshot.empty) {
+                            querySnapshot.forEach(doc => {
+                                const data = doc.data();
+                                results.push({
+                                    Code: code,
+                                    Barcode: data.barcode || 'N/A',
+                                    Name: data.name || 'N/A',
+                                    Quantity: quantity
+                                });
+                            });
+                        } else {
+                            unmatched.push({
                                 Code: code,
-                                Barcode: dataRow[barcodeColumnData],
-                                Name: dataRow[nameColumnData],
                                 Quantity: quantity
                             });
-                            found = true;
                         }
-                    }
-
-                    if (!found) {
-                        unmatched.push({
+                    } catch (error) {
+                        console.error("Firestore query error:", error);
+                        unmatched.push({ // Treat as unmatched if there is a query error
                             Code: code,
-                            Quantity: quantity
+                            Quantity: quantity,
+                            Error: 'Database Query Failed'
                         });
                     }
                 }
 
-                const wb = XLSX.utils.book_new();
+                displayResults(results, unmatched);
+                showMessage('Data Processed and Results Displayed!', true);
 
-                const resultsHeader = ["Code", "Barcode", "Name", "Quantity"];
-
-                const resultsData = results.map(item => [item.Code, item.Barcode, item.Name, item.Quantity]);
-
-                resultsData.unshift(resultsHeader);
-                const resultsSheet = XLSX.utils.aoa_to_sheet(resultsData);
-
-                const wscols = [{
-                        wch: 10
-                    },
-                    {
-                        wch: 20
-                    },
-                    {
-                        wch: 50
-                    },
-                    {
-                        wch: 10
-                    }
-                ];
-                resultsSheet['!cols'] = wscols;
-
-                XLSX.utils.book_append_sheet(wb, resultsSheet, "Results");
-
-                const unmatchedHeader = ["Code", "Quantity"];
-                const unmatchedData = unmatched.map(item => [item.Code, item.Quantity]);
-                unmatchedData.unshift(unmatchedHeader);
-                const unmatchedSheet = XLSX.utils.aoa_to_sheet(unmatchedData);
-                XLSX.utils.book_append_sheet(wb, unmatchedSheet, "Unmatched");
-
-                const currentDate = new Date();
-                const formattedDate = currentDate.toLocaleDateString();
-                const filename = `من ${locationFromValue} الي ${locationToValue} ${formattedDate}.xlsx`;
-
-                XLSX.writeFile(wb, filename);
-
-                document.getElementById('quantityFile').value = '';
-                quantityData = null;
-                showMessage('Data Processed and Results Downloaded!', true);
 
             } catch (error) {
                 showMessage(`Error processing data: ${error.message}`);
+                console.error("Processing error:", error);
+            } finally {
+                document.getElementById('quantityFile').value = ''; // Clear file input after processing
+                quantityData = null; // Clear quantity data
             }
         }
+
+        function displayResults(results, unmatched) {
+            const resultsDisplayDiv = document.getElementById('resultsDisplay');
+            const unmatchedDisplayDiv = document.getElementById('unmatchedDisplay');
+            const resultsSection = document.getElementById('resultsSection');
+            const unmatchedSection = document.getElementById('unmatchedSection');
+
+            resultsDisplayDiv.innerHTML = ''; // Clear previous results
+            unmatchedDisplayDiv.innerHTML = ''; // Clear previous unmatched
+
+            if (results.length > 0) {
+                resultsSection.style.display = 'block';
+                const table = createResultsTable(results, ["Code", "Barcode", "Name", "Quantity"]);
+                resultsDisplayDiv.appendChild(table);
+            } else {
+                resultsSection.style.display = 'none';
+            }
+
+            if (unmatched.length > 0) {
+                unmatchedSection.style.display = 'block';
+                const table = createResultsTable(unmatched, ["Code", "Quantity", "Error"]);
+                unmatchedDisplayDiv.appendChild(table);
+            } else {
+                unmatchedSection.style.display = 'none';
+            }
+        }
+
+
+        function createResultsTable(data, headers) {
+            const table = document.createElement('table');
+            table.className = 'results-table';
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            headers.forEach(headerText => {
+                const header = document.createElement('th');
+                header.textContent = headerText;
+                headerRow.appendChild(header);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            const tbody = document.createElement('tbody');
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                headers.forEach(headerText => {
+                    const cell = document.createElement('td');
+                    cell.textContent = item[headerText.toLowerCase()] || item[headerText] || 'N/A'; // Handle case insensitivity and missing error prop
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            return table;
+        }
+
 
         function showMessage(message, success = false) {
             const messageDiv = document.getElementById('message');
