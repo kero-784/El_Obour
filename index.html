@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale: 1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kero Assistance - Stock Transfer Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
@@ -257,8 +257,8 @@
             databaseLoadStatus.textContent = 'Loading database from Google Sheet...';
 
             try {
-                // **CORS Proxy URL is added here**
-                const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                // **Using api.allorigins.win CORS PROXY**
+                const corsProxyUrl = 'https://api.allorigins.win/raw?url=';
                 const response = await fetch(corsProxyUrl + googleSheetURL);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
