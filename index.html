@@ -5,11 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kero Assistance - Stock Transfer Management</title>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,150 +12,197 @@
 
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f7fb;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            color: #424242;
+            color: #333;
+        }
+
+        .version {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            color: #777;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 8px;
+            border-radius: 5px;
         }
 
         .container {
             background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            padding: 40px;
             width: 85%;
-            max-width: 900px;
+            max-width: 950px;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         h1 {
-            color: #1e88e5;
-            margin-bottom: 20px;
+            color: #2962ff;
+            margin-bottom: 25px;
+            font-size: 2.5em;
         }
 
         #kero-assistance {
-            font-size: 2em;
+            font-weight: bold;
         }
 
         #stock-transfer {
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-style: italic;
+            color: #555;
         }
 
         .section {
-            margin-bottom: 25px;
-            padding: 20px;
-            border: 1px solid #bbdefb;
-            border-radius: 8px;
-            background-color: #e3f2fd;
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 1px solid #cce5ff;
+            border-radius: 10px;
+            background-color: #e8f0fe;
         }
 
-        .location-container { /* Added class for layout */
+        .section h2 {
+            color: #0b479d;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .location-container {
             display: flex;
-            justify-content: space-around; /* Distribute space evenly */
+            justify-content: space-around;
             align-items: center;
-            margin-bottom: 15px; /* Add some space between the selects */
+            margin-bottom: 20px;
         }
 
         .location-container select {
-            width: 45%;  /* Adjust width for better spacing */
-            padding: 10px;
-            border: 1px solid #bbdefb;
-            border-radius: 5px;
+            width: 48%;
+            padding: 12px;
+            border: 1px solid #cce5ff;
+            border-radius: 6px;
             box-sizing: border-box;
-            font-size: 16px;  /* Adjust font-size for better readability */
+            font-size: 16px;
+            appearance: none;
+            background-color: #fff;
+        }
+
+        .location-container select:focus {
+            border-color: #64b5f6;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.2);
         }
 
 
         input[type="file"],
         input[type="text"],
         input[type="password"] {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #bbdefb;
-            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #cce5ff;
+            border-radius: 6px;
             width: 100%;
             box-sizing: border-box;
+            font-size: 16px;
         }
 
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="file"]:focus {
+            border-color: #64b5f6;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.2);
+        }
+
+
         button {
-            background-color: #009688;
+            background-color: #26a69a;
             color: white;
             border: none;
-            padding: 14px 28px;
+            padding: 14px 30px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             margin: 5px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         button:hover {
+            background-color: #00897b;
+        }
+
+        button:active {
             background-color: #00796b;
+            transform: scale(0.98);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
-        #processDataButton {
+
+        #processDownloadButton {
             font-size: 18px;
-            padding: 16px 32px;
-            background-color: #4caf50;
+            padding: 16px 35px;
+            background-color: #43a047;
         }
 
-        #processDataButton:hover {
+        #processDownloadButton:hover {
             background-color: #388e3c;
         }
 
+        #processDownloadButton:active {
+            background-color: #2e7d32;
+            transform: scale(0.98);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
         #message {
-            margin-top: 20px;
+            margin-top: 25px;
             font-weight: bold;
-            color: #d32f2f;
+            color: #e53935;
+            padding: 12px;
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 6px;
+            display: none;
         }
 
         #message.success {
-            color: #2e7d32;
+            color: #388e3c;
+            background-color: #e8f5e9;
+            border-color: #a5d6a7;
         }
+
+        #message.show {
+            display: block;
+        }
+
 
         .select2-container {
             width: 100% !important;
         }
 
         .select2-selection {
-            border: 1px solid #bbdefb !important;
-            border-radius: 5px !important;
-            padding: 6px 12px !important;
+            border: 1px solid #cce5ff !important;
+            border-radius: 6px !important;
+            padding: 10px 12px !important;
             height: auto !important;
+            font-size: 16px;
         }
 
-        .results-section {
-            margin-top: 30px;
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
+        .select2-selection--single .select2-selection__rendered {
+            line-height: 24px !important;
         }
 
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        .select2-selection__arrow {
+            height: 24px !important;
         }
-
-        .results-table th, .results-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .results-table th {
-            background-color: #e0e0e0;
-        }
-
-
     </style>
 
 </head>
@@ -172,52 +214,59 @@
 
     <div id="appContent" class="container">
         <h1>
-            <span id="kero-assistance">Kero Assistance</span>
-            <br>
+            <span id="kero-assistance" style="display: block; margin-bottom: 5px;">Kero Assistance</span>
             <span id="stock-transfer">Stock Transfer Management</span>
         </h1>
 
         <div class="section">
+            <h2>Database from Google Sheet</h2>
+            <label for="googleSheetURL" style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">Google Sheet URL (Published CSV Link):</label>
+            <input type="text" id="googleSheetURL" placeholder="This is loaded directly from Google Sheet" readonly>
+            <button id="loadDatabaseButton" style="display: none;">Load Database from Google Sheet</button>  <!-- Hidden button -->
+            <button id="clearDatabase">Clear Database</button>
+        </div>
+
+        <div class="section">
             <h2>Quantity Upload</h2>
 
-            <div class="location-container">  <!-- Wrapped selects in a container -->
-              <select id="locationFrom" class="location-select">
-                  <option value="">Select Location From</option>
-                  <option value="جاردنز 101">جاردنز 101</option>
-                  <option value="تلال السخنة 102">تلال السخنة 102</option>
-                  <option value="ستيلا 103">ستيلا 103</option>
-                  <option value="الدبلو 104">الدبلو 104</option>
-                  <option value="تلال الساحل 105">تلال الساحل 105</option>
-                  <option value="سوان لك 106">سوان لك 106</option>
-                  <option value="كاسكادا 107">كاسكادا 107</option>
-                  <option value="لافيستا باي 108">لافيستا باي 108</option>
-                  <option value="راس الحكمة 109">راس الحكمة 109</option>
-                  <option value="لازوردي 110">لازوردي 110</option>
-                  <option value="النادي 111">النادي 111</option>
-                  <option value="زايد 112">زايد 112</option>
-                  <option value="القطامية 115">القطامية 115</option>
-                  <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
-                  <option value="مخزن الساحل 202">مخزن الساحل 202</option>
-              </select>
+            <div class="location-container">
+                <select id="locationFrom" class="location-select">
+                    <option value="">Select Location From</option>
+                    <option value="جاردنز 101">جاردنز 101</option>
+                    <option value="تلال السخنة 102">تلال السخنة 102</option>
+                    <option value="ستيلا 103">ستيلا 103</option>
+                    <option value="الدبلو 104">الدبلو 104</option>
+                    <option value="تلال الساحل 105">تلال الساحل 105</option>
+                    <option value="سوان لك 106">سوان لك 106</option>
+                    <option value="كاسكادا 107">كاسكادا 107</option>
+                    <option value="لافيستا باي 108">لافيستا باي 108</option>
+                    <option value="راس الحكمة 109">راس الحكمة 109</option>
+                    <option value="لازوردي 110">لازوردي 110</option>
+                    <option value="النادي 111">النادي 111</option>
+                    <option value="زايد 112">زايد 112</option>
+                    <option value="القطامية 115">القطامية 115</option>
+                    <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
+                    <option value="مخزن الساحل 202">مخزن الساحل 202</option>
+                </select>
 
-              <select id="locationTo" class="location-select">
-                  <option value="">Select Location To</option>
-                  <option value="جاردنز 101">جاردنز 101</option>
-                  <option value="تلال السخنة 102">تلال السخنة 102</option>
-                  <option value="ستيلا 103">ستيلا 103</option>
-                  <option value="الدبلو 104">الدبلو 104</option>
-                  <option value="تلال الساحل 105">تلال الساحل 105</option>
-                  <option value="سوان لك 106">سوان لك 106</option>
-                  <option value="كاسكادا 107">كاسكادا 107</option>
-                  <option value="لافيستا باي 108">لافيستا باي 108</option>
-                  <option value="راس الحكمة 109">راس الحكمة 109</option>
-                  <option value="لازوردي 110">لازوردي 110</option>
-                  <option value="النادي 111">النادي 111</option>
-                  <option value="زايد 112">زايد 112</option>
-                  <option value="القطامية 115">القطامية 115</option>
-                  <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
-                  <option value="مخزن الساحل 202">مخزن الساحل 202</option>
-              </select>
+                <select id="locationTo" class="location-select">
+                    <option value="">Select Location To</option>
+                    <option value="جاردنز 101">جاردنز 101</option>
+                    <option value="تلال السخنة 102">تلال السخنة 102</option>
+                    <option value="ستيلا 103">ستيلا 103</option>
+                    <option value="الدبلو 104">الدبلو 104</option>
+                    <option value="تلال الساحل 105">تلال الساحل 105</option>
+                    <option value="سوان لك 106">سوان لك 106</option>
+                    <option value="كاسكادا 107">كاسكادا 107</option>
+                    <option value="لافيستا باي 108">لافيستا باي 108</option>
+                    <option value="راس الحكمة 109">راس الحكمة 109</option>
+                    <option value="لازوردي 110">لازوردي 110</option>
+                    <option value="النادي 111">النادي 111</option>
+                    <option value="زايد 112">زايد 112</option>
+                    <option value="القطامية 115">القطامية 115</option>
+                    <option value="مخزن بلبيس 201">مخزن بلبيس 201</option>
+                    <option value="مخزن الساحل 202">مخزن الساحل 202</option>
+                </select>
             </div>
 
             <input type="file" id="quantityFile" accept=".xlsx" style="display: none;">
@@ -225,254 +274,274 @@
             <button id="clearQuantity">Clear Quantity</button>
         </div>
 
-        <button id="processDataButton">Process Data and Display Results</button>
+        <button id="processDownloadButton">Process Data and Download Results</button>
 
         <div id="message"></div>
-
-        <div id="resultsSection" class="results-section" style="display:none;">
-            <h2>Results</h2>
-            <div id="resultsDisplay">
-                <!-- Results table will be inserted here -->
-            </div>
-        </div>
-
-        <div id="unmatchedSection" class="results-section" style="display:none;">
-            <h2>Unmatched Items</h2>
-            <div id="unmatchedDisplay">
-                <!-- Unmatched table will be inserted here -->
-            </div>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
+            let databaseData = null;
             let quantityData = null;
 
-            // Firebase configuration - Replace with your actual Firebase project settings
-           const firebaseConfig = {
-  apiKey: "AIzaSyBWEzTf74KZ9jMEfcwY3AU4yYSaZRuE7R4",
-  authDomain: "stock-transfere.firebaseapp.com",
-  databaseURL: "https://stock-transfere-default-rtdb.firebaseio.com",
-  projectId: "stock-transfere",
-  storageBucket: "stock-transfere.firebasestorage.app",
-  messagingSenderId: "934685032211",
-  appId: "1:934685032211:web:dea1e6ea62344709fbe4e6",
-  measurementId: "G-RKZSR9G48D"
-            };
+            // --- Google Sheet CSV URL - Direct Load ---
+            const googleSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv"; // **YOUR GOOGLE SHEET CSV URL**
+            // --- End Google Sheet URL ---
 
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
-            const databaseCollection = db.collection('stockDatabase'); // Choose your Firestore collection name
+            document.getElementById('googleSheetURL').value = "Loading from Google Sheet..."; // Initial text
+            loadDatabaseFromSheet(); // Automatically load on page load
 
+
+            // Database from Google Sheet button event listener (now hidden, but keep for clear database)
+            document.getElementById('loadDatabaseButton').addEventListener('click', loadDatabaseFromSheet);
+            document.getElementById('clearDatabase').addEventListener('click', clearDatabase);
 
             document.getElementById('uploadQuantityButton').addEventListener('click', function() {
                 document.getElementById('quantityFile').click();
             });
 
+
             document.getElementById('quantityFile').addEventListener('change', handleQuantityUpload);
             document.getElementById('clearQuantity').addEventListener('click', clearQuantity);
-            document.getElementById('processDataButton').addEventListener('click', processDataAndDisplay);
+            document.getElementById('processDownloadButton').addEventListener('click', processDataAndDownload);
 
 
-        }); // end of doc ready
+            function loadDatabaseFromSheet() {
+                const dataURL = googleSheetURL; // Direct Google Sheet URL
+
+                showMessage('Loading database from Google Sheet...', false);
+                document.getElementById('message').classList.remove('success', 'show');
+                document.getElementById('message').innerText = 'Loading database from Google Sheet...';
+                document.getElementById('message').classList.add('show');
 
 
-
-        function handleQuantityUpload(event) {
-            handleFileUpload(event, 'quantityData', 'Quantity', ['code', 'quantity']);
-        }
-
-        function handleFileUpload(event, storageKey, sheetName, requiredHeaders) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {
-                        type: 'array'
+                fetch(dataURL) // Fetch directly from Google Sheet URL
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text(); // Expecting CSV text
+                    })
+                    .then(csvData => {
+                        databaseData = parseCSV(csvData);
+                        localStorage.setItem('databaseData', JSON.stringify(databaseData));
+                        showMessage('Database loaded from Google Sheet!', true);
+                        document.getElementById('googleSheetURL').value = "Loaded successfully from Google Sheet"; // Update input text
+                    })
+                    .catch(error => {
+                        showMessage(`Error loading database from Google Sheet: ${error.message}`);
+                        console.error("Fetch error:", error);
+                        document.getElementById('googleSheetURL').value = "Error loading from Google Sheet"; // Update input text to error
                     });
-
-                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-
-                    if (!sheet) {
-                        throw new Error(`Sheet "${sheetName}" not found.`);
-                    }
-
-                    const jsonData = XLSX.utils.sheet_to_json(sheet, {
-                        header: 1
-                    });
-
-                    const headers = jsonData[0].map(header => header.toLowerCase());
-                    const missingHeaders = requiredHeaders.filter(header => !headers.includes(header));
-
-                    if (missingHeaders.length > 0) {
-                        throw new Error(`Missing required headers: ${missingHeaders.join(', ')} in "${sheetName}" sheet.`);
-                    }
-
-                    quantityData = jsonData; // Store quantity data in variable
-                    showMessage(`${sheetName} uploaded successfully!`, true);
-
-
-                } catch (error) {
-                    showMessage(`Error uploading ${sheetName}: ${error.message}`);
-                }
-            };
-            reader.onerror = function(error) {
-                showMessage(`Error reading file: ${error.message}`);
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-
-        function clearQuantity() {
-            document.getElementById('quantityFile').value = '';
-            quantityData = null;
-            showMessage('Quantity cleared!', true);
-        }
-
-        async function processDataAndDisplay() {
-
-            const locationFromValue = document.getElementById('locationFrom').value;
-            const locationToValue = document.getElementById('locationTo').value;
-
-            if (!locationFromValue || !locationToValue) {
-                showMessage('Please select both "Location From" and "Location To".');
-                return;
             }
 
-            if (!quantityData) {
-                showMessage('Please upload the quantity data first!');
-                return;
+
+            function parseCSV(csvText) {
+                const lines = csvText.trim().split('\n');
+                if (lines.length < 2) return [];
+
+                const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
+                const jsonData = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const currentLine = lines[i].split(',');
+                    const rowData = {};
+                    for (let j = 0; j < headers.length; j++) {
+                        rowData[headers[j]] = currentLine[j] ? currentLine[j].trim() : '';
+                    }
+                    jsonData.push(rowData);
+                }
+                return jsonData;
             }
 
-            showMessage('Processing data...', false);
-            const results = [];
-            const unmatched = [];
 
-            try {
-                const quantityHeaders = quantityData[0].map(header => header.toLowerCase());
-                const codeColumnQuantity = quantityHeaders.findIndex(header => header === 'code');
-                const quantityColumnQuantity = quantityHeaders.findIndex(header => header === 'quantity');
+            function handleQuantityUpload(event) {
+                handleFileUpload(event, 'quantityData', 'Quantity', ['code', 'quantity']);
+            }
 
-                if (codeColumnQuantity === -1 || quantityColumnQuantity === -1) {
-                    throw new Error('Required columns ("Code", "Quantity") not found in Quantity sheet.');
-                }
+            function handleFileUpload(event, storageKey, sheetName, requiredHeaders) {
+                const file = event.target.files[0];
+                if (!file) return;
 
-                for (let i = 1; i < quantityData.length; i++) {
-                    const quantityRow = quantityData[i];
-                    const code = String(quantityRow[codeColumnQuantity]).trim();
-                    const quantity = quantityRow[quantityColumnQuantity];
-
-                    if (!code) continue;
-
+                const reader = new FileReader();
+                reader.onload = function(e) {
                     try {
-                        const querySnapshot = await databaseCollection
-                            .where('code', '==', code)
-                            .limit(1)
-                            .get();
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {
+                            type: 'array'
+                        });
 
-                        if (!querySnapshot.empty) {
-                            querySnapshot.forEach(doc => {
-                                const data = doc.data();
+                        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                        if (!sheet) {
+                            throw new Error(`Sheet "${sheetName}" not found.`);
+                        }
+
+                        const jsonData = XLSX.utils.sheet_to_json(sheet, {
+                            header: 1
+                        });
+
+                        const headers = jsonData[0].map(header => header.toLowerCase());
+                        const missingHeaders = requiredHeaders.filter(header => !headers.includes(header));
+
+                        if (missingHeaders.length > 0) {
+                            throw new Error(`Missing required headers: ${missingHeaders.join(', ')} in "${sheetName}" sheet.`);
+                        }
+
+                        localStorage.setItem(storageKey, JSON.stringify(jsonData));
+                        showMessage(`${sheetName} uploaded successfully!`, true);
+                    } catch (error) {
+                        showMessage(`Error uploading ${sheetName}: ${error.message}`);
+                    }
+                };
+                reader.onerror = function(error) {
+                    showMessage(`Error reading file: ${error.message}`);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            function clearDatabase() {
+                localStorage.removeItem('databaseData');
+                databaseData = null;
+                document.getElementById('googleSheetURL').value = 'Database Cleared';
+                showMessage('Database cleared!', true);
+            }
+
+            function clearQuantity() {
+                document.getElementById('quantityFile').value = '';
+                quantityData = null;
+                showMessage('Quantity cleared!', true);
+            }
+
+            function processDataAndDownload() {
+
+
+                const locationFromValue = document.getElementById('locationFrom').value;
+                const locationToValue = document.getElementById('locationTo').value;
+
+                if (!locationFromValue || !locationToValue) {
+                    showMessage('Please select both "Location From" and "Location To".');
+                    return;
+                }
+                if (!localStorage.getItem('databaseData')) {
+                    showMessage('Please load the database from Google Sheet first!');
+                    return;
+                }
+                if (!quantityData) {
+                    showMessage('Please upload the quantity data first!');
+                    return;
+                }
+
+                try {
+                    databaseData = JSON.parse(localStorage.getItem('databaseData'));
+
+                    const results = [];
+                    const unmatched = [];
+
+                    const dataHeaders = Object.keys(databaseData[0] || {}).map(header => header.toLowerCase());
+
+                    const codeColumnData = dataHeaders.findIndex(header => header === 'code');
+                    const barcodeColumnData = dataHeaders.findIndex(header => header === 'barcode');
+                    const nameColumnData = dataHeaders.findIndex(header => header === 'name');
+
+                    if (codeColumnData === -1 || barcodeColumnData === -1 || nameColumnData === -1) {
+                        throw new Error('Required columns ("Code", "Barcode", "Name") not found in Data sheet.');
+                    }
+
+                    const quantityHeaders = quantityData[0].map(header => header.toLowerCase());
+                    const codeColumnQuantity = quantityHeaders.findIndex(header => header === 'code');
+                    const quantityColumnQuantity = quantityHeaders.findIndex(header => header === 'quantity');
+
+                    if (codeColumnQuantity === -1 || quantityColumnQuantity === -1) {
+                        throw new Error('Required columns ("Code", "Quantity") not found in Quantity sheet.');
+                    }
+
+
+                    for (let i = 1; i < quantityData.length; i++) {
+                        const quantityRow = quantityData[i];
+                        const code = String(quantityRow[codeColumnQuantity]).trim();
+                        const quantity = quantityRow[quantityColumnQuantity];
+
+                        if (!code) continue;
+
+                        let found = false;
+                        for (let j = 0; j < databaseData.length; j++) {
+                            const dataRow = databaseData[j];
+                            if (String(dataRow[dataHeaders[codeColumnData]]).trim() === code) {
                                 results.push({
                                     Code: code,
-                                    Barcode: data.barcode || 'N/A',
-                                    Name: data.name || 'N/A',
+                                    Barcode: dataRow[dataHeaders[barcodeColumnData]],
+                                    Name: dataRow[dataHeaders[nameColumnData]],
                                     Quantity: quantity
                                 });
-                            });
-                        } else {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
                             unmatched.push({
                                 Code: code,
                                 Quantity: quantity
                             });
                         }
-                    } catch (error) {
-                        console.error("Firestore query error:", error);
-                        unmatched.push({ // Treat as unmatched if there is a query error
-                            Code: code,
-                            Quantity: quantity,
-                            Error: 'Database Query Failed'
-                        });
                     }
+
+
+                    const wb = XLSX.utils.book_new();
+
+                    const resultsHeader = ["Code", "Barcode", "Name", "Quantity"];
+
+                    const resultsData = results.map(item => [item.Code, item.Barcode, item.Name, item.Quantity]);
+
+                    resultsData.unshift(resultsHeader);
+                    const resultsSheet = XLSX.utils.aoa_to_sheet(resultsData);
+
+                    const wscols = [{
+                            wch: 10
+                        },
+                        {
+                            wch: 20
+                        },
+                        {
+                            wch: 50
+                        },
+                        {
+                            wch: 10
+                        }
+                    ];
+                    resultsSheet['!cols'] = wscols;
+
+                    XLSX.utils.book_append_sheet(wb, resultsSheet, "Results");
+
+                    const unmatchedHeader = ["Code", "Quantity"];
+                    const unmatchedData = unmatched.map(item => [item.Code, item.Quantity]);
+                    unmatchedData.unshift(unmatchedHeader);
+                    const unmatchedSheet = XLSX.utils.aoa_to_sheet(unmatchedData);
+                    XLSX.utils.book_append_sheet(wb, unmatchedSheet, "Unmatched");
+
+                    const currentDate = new Date();
+                    const formattedDate = currentDate.toLocaleDateString();
+                    const filename = `من ${locationFromValue} الي ${locationToValue} ${formattedDate}.xlsx`;
+
+                    XLSX.writeFile(wb, filename);
+
+                    document.getElementById('quantityFile').value = '';
+                    quantityData = null;
+                    showMessage('Data Processed and Results Downloaded!', true);
+
+                } catch (error) {
+                    showMessage(`Error processing data: ${error.message}`);
                 }
-
-                displayResults(results, unmatched);
-                showMessage('Data Processed and Results Displayed!', true);
-
-
-            } catch (error) {
-                showMessage(`Error processing data: ${error.message}`);
-                console.error("Processing error:", error);
-            } finally {
-                document.getElementById('quantityFile').value = ''; // Clear file input after processing
-                quantityData = null; // Clear quantity data
-            }
-        }
-
-        function displayResults(results, unmatched) {
-            const resultsDisplayDiv = document.getElementById('resultsDisplay');
-            const unmatchedDisplayDiv = document.getElementById('unmatchedDisplay');
-            const resultsSection = document.getElementById('resultsSection');
-            const unmatchedSection = document.getElementById('unmatchedSection');
-
-            resultsDisplayDiv.innerHTML = ''; // Clear previous results
-            unmatchedDisplayDiv.innerHTML = ''; // Clear previous unmatched
-
-            if (results.length > 0) {
-                resultsSection.style.display = 'block';
-                const table = createResultsTable(results, ["Code", "Barcode", "Name", "Quantity"]);
-                resultsDisplayDiv.appendChild(table);
-            } else {
-                resultsSection.style.display = 'none';
             }
 
-            if (unmatched.length > 0) {
-                unmatchedSection.style.display = 'block';
-                const table = createResultsTable(unmatched, ["Code", "Quantity", "Error"]);
-                unmatchedDisplayDiv.appendChild(table);
-            } else {
-                unmatchedSection.style.display = 'none';
+            function showMessage(message, success = false) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.innerText = message;
+                messageDiv.className = success ? 'success show' : 'show';
             }
-        }
-
-
-        function createResultsTable(data, headers) {
-            const table = document.createElement('table');
-            table.className = 'results-table';
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            headers.forEach(headerText => {
-                const header = document.createElement('th');
-                header.textContent = headerText;
-                headerRow.appendChild(header);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-            const tbody = document.createElement('tbody');
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                headers.forEach(headerText => {
-                    const cell = document.createElement('td');
-                    cell.textContent = item[headerText.toLowerCase()] || item[headerText] || 'N/A'; // Handle case insensitivity and missing error prop
-                    row.appendChild(cell);
-                });
-                tbody.appendChild(row);
-            });
-            table.appendChild(tbody);
-            return table;
-        }
-
-
-        function showMessage(message, success = false) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.innerText = message;
-            messageDiv.className = success ? 'success' : '';
-        }
+        });
     </script>
 
 </body>
