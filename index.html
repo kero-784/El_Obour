@@ -131,6 +131,13 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
         }
+        .error-message {
+            color: red;
+            font-size: 0.8em;
+            width: 100%; /* Ensure error messages take full width below input if wrapped */
+            text-align: right;
+            padding-top: 2px;
+        }
 
         .adjustable-width.code-input {
             width: 120px; /* Further reduced width */
@@ -425,11 +432,11 @@
                 </div>
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" readonly> <!-- Removed adjustable-width for full width -->
+                    <input type="text" class="form-control" id="name" readonly>
                 </div>
                 <div class="form-group">
                     <label for="supplierName">Supplier Name:</label>
-                    <input type="text" class="form-control" id="supplierName" readonly> <!-- Removed adjustable-width for full width -->
+                    <input type="text" class="form-control" id="supplierName" readonly>
                 </div>
                 <div class="form-group">
                     <label for="alternateSupplierCheck">شراء من مورد اخر:</label>
@@ -441,7 +448,7 @@
                 </div>
                 <div class="form-group" id="alternateSupplierDiv" style="display: none;">
                     <label for="alternateSupplierName">Alternate Supplier Name:</label>
-                    <input type="text" class="form-control" id="alternateSupplierName"> <!-- Removed adjustable-width for full width -->
+                    <input type="text" class="form-control" id="alternateSupplierName">
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -454,6 +461,7 @@
                         <label for="unit">Units per Case:</label>
                         <input type="number" class="form-control adjustable-width unit-input" id="unit" value="1"
                             oninput="calculateTotal()">
+                        <div id="unitError" class="error-message"></div> <!-- Added error display for unit -->
                     </div>
                 </div>
                 <div class="form-row">
@@ -553,7 +561,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script> <!-- Use xlsx.full.min.js for styling features if needed, or just xlsx.min.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <!-- Firebase SDK -->
@@ -579,8 +587,8 @@
         let database = [];
         let entries = [];
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv";
-        const databaseCollectionName = 'databaseItems';
-        const entriesCollectionName = 'entries';
+        const databaseCollectionName = 'databaseItems'; // Used for potential future Firebase DB item sync
+        const entriesCollectionName = 'entries';       // Used for potential future Firebase entry sync
         const LOCAL_STORAGE_ENTRIES_KEY = 'pricingAppEntries';
 
         function saveEntriesToLocalStorage() {
@@ -621,8 +629,8 @@
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
                 errorElement.textContent = message;
-                errorElement.style.color = 'red'; // Make error messages red
-                errorElement.style.fontSize = '0.8em';
+                // errorElement.style.color = 'red'; // Already handled by CSS .error-message
+                // errorElement.style.fontSize = '0.8em';
             }
         }
 
@@ -661,10 +669,10 @@
 
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
-            const headers = lines[0].split(',').map(header => header.trim().toLowerCase().replace(/\r$/, '')); // remove trailing \r
+            const headers = lines[0].split(',').map(header => header.trim().toLowerCase().replace(/\r$/, ''));
             const data = [];
             for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',').map(value => value.trim().replace(/\r$/, '')); // remove trailing \r
+                const values = lines[i].split(',').map(value => value.trim().replace(/\r$/, ''));
                 if (values.length === headers.length) {
                     const rowData = {};
                     for (let j = 0; j < headers.length; j++) {
@@ -680,7 +688,6 @@
         window.onload = function () {
             loadEntriesFromLocalStorageAndUpdateTable();
             autoLoadDatabase();
-            // Set default type to trigger currentPriceDiv logic if needed
             toggleCurrentPriceField();
         };
 
@@ -726,13 +733,19 @@
             }, 300);
         }
 
-        async function clearDatabase() { // This function clears the local in-memory database, not Firebase
-            if (confirm("Are you sure you want to clear the locally loaded database (from Google Sheet)? This will not affect the Google Sheet itself or Firebase entries.")) {
-                database = []; // Clear in-memory database
+        async function clearDatabase() {
+            if (confirm("Are you sure you want to clear the locally loaded database (from Google Sheet)? This will not affect the Google Sheet itself.")) {
+                database = [];
                 displayMessage('In-memory database (from Google Sheet) cleared!');
-                // If the popup is open, clear its content
                 const popupTableBody = document.querySelector('#databasePopup #databaseTable tbody');
-                if (popupTableBody) popupTableBody.innerHTML = '';
+                if (popupTableBody) {
+                     popupTableBody.innerHTML = ''; // Clear current view if open
+                     const row = popupTableBody.insertRow();
+                     const cell = row.insertCell();
+                     cell.colSpan = 3;
+                     cell.textContent = "Database is empty or not loaded yet.";
+                     cell.style.textAlign = "center";
+                }
             }
         }
 
@@ -740,7 +753,7 @@
         function getItemDetails() {
             const code = document.getElementById('code').value.trim();
             clearError('codeError');
-            document.getElementById('name').value = ''; // Clear previous details
+            document.getElementById('name').value = '';
             document.getElementById('supplierName').value = '';
 
             if (!code) return;
@@ -749,7 +762,7 @@
             if (foundItem) {
                 document.getElementById('name').value = foundItem.name || '';
                 document.getElementById('supplierName').value = foundItem['supplier name'] || '';
-                displayMessage('Item details found.');
+                // displayMessage('Item details found.'); // Can be a bit noisy, optional
             } else {
                 displayMessage('Item details not found in the loaded database.', true);
             }
@@ -758,7 +771,7 @@
         function toggleAlternateSupplier() {
             const checkBox = document.getElementById('alternateSupplierCheck');
             const alternateSupplierDiv = document.getElementById('alternateSupplierDiv');
-            alternateSupplierDiv.style.display = checkBox.checked ? 'flex' : 'none'; // use flex for consistency
+            alternateSupplierDiv.style.display = checkBox.checked ? 'flex' : 'none';
         }
 
         function toggleCurrentPriceField() {
@@ -771,32 +784,28 @@
             clearError('costError');
             clearError('vatError');
             clearError('currentPriceError');
+            clearError('unitError');
 
             const cost = parseFloat(document.getElementById('cost').value) || 0;
-            const unit = parseInt(document.getElementById('unit').value) || 1;
+            const unit = parseInt(document.getElementById('unit').value) || 0; // Allow 0 for intermediate calc before validation
             const discount = parseFloat(document.getElementById('discount').value) || 0;
             const vatRate = parseFloat(document.getElementById('vat').value) || 0;
-            const type = document.getElementById('type').value;
-            const currentPriceInput = document.getElementById('currentPrice').value; // Keep as string for now
-            let currentPrice = 0;
-            if (type === 'مرتجع' && currentPriceInput !== '') {
-                 currentPrice = parseFloat(currentPriceInput) || 0;
-            }
 
-
-            if (cost < 0) { // Allow 0 cost
+            let valid = true;
+            if (cost < 0) {
                 displayError('costError', 'Cost must be a non-negative number.');
-                document.getElementById('unitPrice').value = '';
-                document.getElementById('casePrice').value = '';
-                return;
+                valid = false;
             }
-             if (unit <= 0) {
-                displayError('unitError', 'Units per case must be positive.'); // Assuming you might add a unitError field
-                document.getElementById('unitPrice').value = '';
-                document.getElementById('casePrice').value = '';
-                return;
+            if (unit <= 0) {
+                displayError('unitError', 'Units per case must be positive.');
+                valid = false;
             }
 
+            if (!valid) {
+                document.getElementById('unitPrice').value = '';
+                document.getElementById('casePrice').value = '';
+                return;
+            }
 
             let discountedCost = cost * (1 - discount / 100);
             let costWithVat = discountedCost * (1 + vatRate / 100);
@@ -814,35 +823,54 @@
             const alternateSupplierCheck = document.getElementById('alternateSupplierCheck').checked;
             const alternateSupplierName = document.getElementById('alternateSupplierName').value.trim();
             const costInput = document.getElementById('cost').value;
-            const unit = parseInt(document.getElementById('unit').value);
-            const discount = parseFloat(document.getElementById('discount').value);
-            const vat = document.getElementById('vat').value;
-            const unitPrice = document.getElementById('unitPrice').value; // This is already a string ".toFixed(3)"
-            const casePrice = document.getElementById('casePrice').value; // This is already a string ".toFixed(3)"
+            const unitInput = document.getElementById('unit').value;
+            const discount = parseFloat(document.getElementById('discount').value); // Defaulted to 0 in calculateTotal if empty
+            const vat = document.getElementById('vat').value; // Defaulted to 0 in calculateTotal if empty
+            const unitPrice = document.getElementById('unitPrice').value;
+            const casePrice = document.getElementById('casePrice').value;
             const type = document.getElementById('type').value;
             const currentPriceInput = document.getElementById('currentPrice').value;
 
+            let isValid = true;
+            clearError('codeError');
+            clearError('costError');
+            clearError('unitError');
+            clearError('currentPriceError');
+
+
             if (!code) {
-                displayMessage('Code is required.', true);
-                return;
+                displayError('codeError', 'Code is required.');
+                isValid = false;
             }
             if (costInput === '' || isNaN(parseFloat(costInput)) || parseFloat(costInput) < 0) {
-                displayMessage('Valid case cost is required.', true);
-                return;
+                displayError('costError', 'Valid case cost is required.');
+                isValid = false;
             }
+            const unit = parseInt(unitInput);
              if (isNaN(unit) || unit <= 0) {
-                displayMessage('Valid units per case required.', true);
-                return;
+                displayError('unitError', 'Valid units per case required (must be > 0).');
+                isValid = false;
             }
-
 
             let currentFormatted = '';
             if (type === 'مرتجع') {
                 if (currentPriceInput === '' || isNaN(parseFloat(currentPriceInput)) || parseFloat(currentPriceInput) < 0) {
-                    displayMessage('Valid current price is required for "مرتجع" type.', true);
-                    return;
+                    displayError('currentPriceError', 'Valid current price is required for "مرتجع" type.');
+                    isValid = false;
+                } else {
+                    currentFormatted = parseFloat(currentPriceInput).toFixed(3);
                 }
-                currentFormatted = parseFloat(currentPriceInput).toFixed(3);
+            }
+
+            if (!unitPrice || !casePrice) { // Ensure calculations were successful
+                displayMessage('Please ensure all price calculations are complete.', true);
+                isValid = false;
+            }
+
+
+            if (!isValid) {
+                displayMessage('Please correct the errors before saving.', true);
+                return;
             }
 
 
@@ -850,13 +878,13 @@
                 code: code,
                 name: name,
                 supplier: alternateSupplierCheck && alternateSupplierName ? alternateSupplierName : supplierName,
-                units: unit,
-                discount: discount,
+                units: unit, // Use parsed unit
+                discount: isNaN(discount) ? 0 : discount,
                 vat: vat,
-                piece: unitPrice, // Already formatted string
-                case: casePrice,   // Already formatted string
+                piece: unitPrice,
+                case: casePrice,
                 type: type,
-                current: currentFormatted // Formatted string or empty
+                current: currentFormatted
             };
 
             entries.push(entryData);
@@ -880,15 +908,15 @@
             document.getElementById('unitPrice').value = '';
             document.getElementById('casePrice').value = '';
             document.getElementById('currentPrice').value = '';
-            // document.getElementById('currentPriceDiv').style.display = 'none'; // Keep based on type
             document.getElementById('type').value = 'شراء';
-            toggleCurrentPriceField(); // Reset current price field visibility
+            toggleCurrentPriceField();
 
 
             clearError('codeError');
             clearError('costError');
             clearError('vatError');
             clearError('currentPriceError');
+            clearError('unitError');
         }
 
 
@@ -904,10 +932,10 @@
                 row.insertCell().textContent = entry.units;
                 row.insertCell().textContent = entry.discount;
                 row.insertCell().textContent = entry.vat;
-                row.insertCell().textContent = entry.piece; // Already formatted string
-                row.insertCell().textContent = entry.case;   // Already formatted string
+                row.insertCell().textContent = entry.piece;
+                row.insertCell().textContent = entry.case;
                 row.insertCell().textContent = entry.type;
-                row.insertCell().textContent = entry.current; // Already formatted string or empty
+                row.insertCell().textContent = entry.current;
 
                 const actionsCell = row.insertCell();
                 const deleteButton = document.createElement('button');
@@ -928,27 +956,12 @@
         }
 
         async function clearAll() {
-             if (confirm("Are you sure you want to clear all entries from the local list? This will also attempt to clear them from Firebase if they were previously synced.")) {
-                try {
-                    // Optional: Clear Firebase entries. For now, focuses on local.
-                    // const batch = db.batch();
-                    // const querySnapshot = await db.collection(entriesCollectionName).get();
-                    // querySnapshot.forEach(doc => batch.delete(doc.ref));
-                    // await batch.commit();
-                    // displayMessage('Entries cleared from Firebase.');
-
-                    clearEntriesFromLocalStorage();
-                    entries = [];
-                    updateEntriesTable();
-                    displayMessage('All local entries cleared.');
-                } catch (error) {
-                    console.error('Error clearing entries:', error);
-                    displayMessage('Error clearing entries. Local entries might still be cleared.', true);
-                     // Fallback to clearing local if Firebase fails
-                    clearEntriesFromLocalStorage();
-                    entries = [];
-                    updateEntriesTable();
-                }
+             if (confirm("Are you sure you want to clear all entries from the local list?")) {
+                // This primarily clears local. Firebase clearing is more complex and depends on sync strategy.
+                clearEntriesFromLocalStorage();
+                entries = [];
+                updateEntriesTable();
+                displayMessage('All local entries cleared.');
             }
         }
 
@@ -967,16 +980,15 @@
                         "Units": entry.units,
                         "Discount (%)": entry.discount,
                         "VAT (%)": entry.vat,
-                        "Piece Price": entry.piece, // Already string formatted to 3 decimals
-                        "Case Price": entry.case,   // Already string formatted to 3 decimals
+                        "Piece Price": entry.piece,
+                        "Case Price": entry.case,
                         "Type": entry.type,
-                        "Current Price": entry.current // Already string formatted to 3 decimals or empty
+                        "Current Price": entry.current
                     };
                 });
 
                 const worksheet = XLSX.utils.json_to_sheet(dataForExcel);
 
-                // Auto-fit column widths
                 const columnWidths = [];
                 const header = Object.keys(dataForExcel[0] || {});
                 header.forEach(key => {
@@ -986,7 +998,7 @@
                             max_width = row[key].toString().length;
                         }
                     });
-                    columnWidths.push({ wch: max_width + 2 }); // Add a little padding
+                    columnWidths.push({ wch: max_width + 2 });
                 });
                 worksheet['!cols'] = columnWidths;
 
@@ -1003,49 +1015,44 @@
             }
         }
 
-
         function exportToJPG() {
             console.log("exportToJPG function started");
+
             const table = document.getElementById('entriesTable');
+            // const hiddenCanvas = document.getElementById('hiddenCanvas'); // Declared in HTML
+
             if (entries.length === 0) {
                 displayMessage('No entries to export as JPG.', true);
                 return;
             }
 
-            // Temporarily adjust styles for full content capture
-            const originalTableStyles = {
-                overflow: table.style.overflow,
-                maxWidth: table.style.maxWidth
-            };
+            // Temporarily adjust styles for rendering as in the original version provided
+            const originalStyles = {};
             const tds = table.querySelectorAll('td');
-            const originalTdStyles = [];
             tds.forEach(td => {
-                originalTdStyles.push({
-                    element: td,
+                originalStyles[td] = { // Using td element as key
                     whiteSpace: td.style.whiteSpace,
-                    textOverflow: td.style.textOverflow,
-                    overflow: td.style.overflow
-                });
-                td.style.whiteSpace = 'normal'; // Allow wrapping
-                td.style.textOverflow = 'clip';
-                td.style.overflow = 'visible';
+                    wordBreak: td.style.wordBreak,
+                    textOverflow: td.style.textOverflow
+                };
+                td.style.whiteSpace = 'nowrap'; // Force single line
+                td.style.wordBreak = 'normal';   // Prevent word breaks
+                td.style.textOverflow = 'clip'; // Show full text
             });
-            // Ensure the table itself can expand
-            table.style.overflow = 'visible';
-            table.style.maxWidth = 'none';
-
+            console.log("Before html2canvas call");
 
             html2canvas(table, {
-                scale: 2, // Increase scale for better resolution
+                scale: 2,
                 useCORS: true,
                 logging: true,
-                // scrollY: -window.scrollY, // html2canvas usually handles this
-                // windowWidth: table.scrollWidth, // Use table's scrollWidth
-                // windowHeight: table.scrollHeight // Use table's scrollHeight
+                scrollY: window.scrollY * -1, // Original option
+                scrollX: 0,                   // Original option
+                windowWidth: document.body.scrollWidth,  // Original option
+                windowHeight: document.body.scrollHeight // Original option
             }).then(canvas => {
                 console.log("html2canvas .then block executed");
                 try {
-                    const imgData = canvas.toDataURL('image/jpeg', 0.95); // Higher quality
+                    const imgData = canvas.toDataURL('image/jpeg', 0.9);
                     const link = document.createElement('a');
                     link.href = imgData;
                     link.download = 'entries_table.jpg';
@@ -1057,31 +1064,29 @@
                     console.error('Error during JPG export:', exportError);
                     displayMessage('Error exporting to JPG. Check the console for details.', true);
                 }
+            }).finally(() => {
+                console.log("html2canvas .finally block executed");
+                // Restore original styles after rendering
+                tds.forEach(td => {
+                    if (originalStyles[td]) {
+                        td.style.whiteSpace = originalStyles[td].whiteSpace;
+                        td.style.wordBreak = originalStyles[td].wordBreak;
+                        td.style.textOverflow = originalStyles[td].textOverflow;
+                    }
+                });
             }).catch(error => {
                 console.log("html2canvas .catch block executed", error);
                 console.error('Error exporting to JPG:', error);
                 displayMessage('Error exporting to JPG. Check the console for details.', true);
-            }).finally(() => {
-                console.log("html2canvas .finally block executed");
-                 // Restore original styles
-                table.style.overflow = originalTableStyles.overflow;
-                table.style.maxWidth = originalTableStyles.maxWidth;
-                originalTdStyles.forEach(style => {
-                    style.element.style.whiteSpace = style.whiteSpace;
-                    style.element.style.textOverflow = style.textOverflow;
-                    style.element.style.overflow = style.overflow;
-                });
             });
             console.log("exportToJPG function finished (after html2canvas call)");
         }
 
-        // Functions related to Firebase that were not requested to be changed but kept from original:
+        // Firebase related functions (largely for potential future use, as current focus is local)
         // async function uploadEntriesToFirebase() { ... }
         // async function loadEntriesFromFirebase() { ... }
         // async function clearFirebaseCollection(collectionName) { ... }
-        // Make sure these are reviewed if Firebase sync is a core part of the workflow.
-        // The `clearDatabase` function was modified to only clear the in-memory `database` variable,
-        // and `clearAll` was modified to primarily focus on local entries, with Firebase clearing commented out.
+
     </script>
 </body>
 
