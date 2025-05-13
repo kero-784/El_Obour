@@ -23,6 +23,8 @@
             --text-color-dark: #343a40;
             --text-color-light: #ffffff;
             --accent-color: #28a745; /* Green for success/excel export */
+            --danger-color: #dc3545;
+            --danger-color-darker: #c82333;
         }
 
         body {
@@ -154,37 +156,52 @@
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: var(--text-color-light);
-            border-radius: 8px;
-            padding: 0.6rem 1rem;
-            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
         .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
             background-color: var(--primary-color-darker) !important;
             border-color: var(--primary-color-darker) !important;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            color: var(--text-color-light);
+        }
+        .btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+            background-color: var(--danger-color-darker) !important;
+            border-color: var(--danger-color-darker) !important;
+        }
+
+
+        .btn-secondary, .btn-info, .btn-success { /* Standard styling for these */
+             /* Bootstrap default will apply or define specific colors if needed */
+        }
+
+        /* Common button styles for custom and Bootstrap */
+        .btn { /* Ensure all buttons share these base styles */
+            border-radius: 8px;
+            padding: 0.6rem 1rem; /* Standardized padding */
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            margin-right: 5px; /* Add some space between buttons */
+        }
+        .btn:last-child {
+            margin-right: 0; /* No margin for the last button in a group */
+        }
+
+        .btn:hover, .btn:focus, .btn:active {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             transform: scale(1.02);
         }
-        .btn-secondary, .btn-danger, .btn-info, .btn-success {
-            border-radius: 8px;
-            padding: 0.5rem 0.9rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
+
          .btn-success {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
             color: var(--text-color-light);
         }
         .btn-success:hover {
-            background-color: #1e7e34;
+            background-color: #1e7e34; /* Darker green */
             border-color: #1e7e34;
-            transform: scale(1.02);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-        }
-        .btn-secondary:hover, .btn-danger:hover, .btn-info:hover {
-            transform: scale(1.02);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
 
         /* --- Entries Table Styling --- */
@@ -259,7 +276,12 @@
         }
         #overlay.show { display: block; }
 
-        .export-buttons-container { margin-top: 1rem; display: flex; gap: 10px; }
+        .actions-button-container { /* General container for action buttons */
+            margin-top: 1rem;
+            display: flex;
+            gap: 10px; /* Space between buttons */
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+        }
     </style>
 </head>
 
@@ -366,11 +388,8 @@
                     <label for="casePrice">Case Price (After Discount & VAT):</label>
                     <input type="text" class="form-control adjustable-width price-input" id="casePrice" readonly>
                 </div>
-
-
-                <button class="btn btn-primary mr-2" onclick="addToList()"><i class="fas fa-save"></i> Save to Local</button>
-                <button class="btn btn-danger" onclick="clearAll()"><i class="fas fa-broom"></i> Clear All Entries</button>
-
+                <!-- MOVED Clear All Entries button from here -->
+                <button class="btn btn-primary" onclick="addToList()"><i class="fas fa-save"></i> Save to Local</button>
             </div>
         </div>
 
@@ -403,10 +422,11 @@
         </div>
 
 
-        <!-- Export Section -->
-        <div class="export-buttons-container">
+        <!-- Export and Clear Section -->
+        <div class="actions-button-container"> <!-- Renamed from export-buttons-container -->
              <button class="btn btn-success" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Export to Excel</button>
              <button class="btn btn-info" onclick="exportToJPG()"><i class="fas fa-file-image"></i> Export to JPG</button>
+             <button class="btn btn-danger" onclick="clearAll()"><i class="fas fa-broom"></i> Clear All Entries</button> <!-- MOVED HERE -->
         </div>
 
 
@@ -440,7 +460,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
-    <!-- UPDATED html2canvas SCRIPT TAG with CORRECTED INTEGRITY HASH -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
             integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -738,8 +757,8 @@
                 }
             }
 
-            if (!unitPrice || !casePrice) {
-                displayMessage('Please ensure all price calculations are complete.', true);
+            if (!unitPrice || !casePrice) { // Check if calculations produced values
+                displayMessage('Price calculations are incomplete. Please check inputs.', true);
                 isValid = false;
             }
 
@@ -920,22 +939,13 @@
                 scrollX: 0,
                 windowWidth: document.body.scrollWidth,
                 windowHeight: document.body.scrollHeight,
-                // For newer html2canvas, consider adding this if 'willReadFrequently' warning persists
-                // onclone: (clonedDoc) => {
-                //    // This is a bit more advanced if needed to access internal canvases
-                // }
             }).then(canvas => {
                 console.log("html2canvas .then block executed");
                 try {
-                    // If 'willReadFrequently' is still an issue with the new library for its *own* internal canvases,
-                    // we could try setting it on the *final output canvas* from html2canvas, though the warning
-                    // usually refers to intermediate canvases the library creates.
-                    // canvas.getContext('2d', { willReadFrequently: true }); // Might help for the final toDataURL call
-
-                    const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                    const imgData = canvas.toDataURL('image/jpeg', 0.9); // Already JPEG
                     const link = document.createElement('a');
                     link.href = imgData;
-                    link.download = 'entries_table.jpg';
+                    link.download = 'entries_table.jpg'; // Already .jpg
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
