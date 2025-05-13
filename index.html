@@ -562,7 +562,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <!-- UPDATED html2canvas SCRIPT TAG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+            integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoVNRqyhClYFUKph3lQGQtBYPblaxA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -629,8 +632,6 @@
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
                 errorElement.textContent = message;
-                // errorElement.style.color = 'red'; // Already handled by CSS .error-message
-                // errorElement.style.fontSize = '0.8em';
             }
         }
 
@@ -762,7 +763,6 @@
             if (foundItem) {
                 document.getElementById('name').value = foundItem.name || '';
                 document.getElementById('supplierName').value = foundItem['supplier name'] || '';
-                // displayMessage('Item details found.'); // Can be a bit noisy, optional
             } else {
                 displayMessage('Item details not found in the loaded database.', true);
             }
@@ -787,7 +787,7 @@
             clearError('unitError');
 
             const cost = parseFloat(document.getElementById('cost').value) || 0;
-            const unit = parseInt(document.getElementById('unit').value) || 0; // Allow 0 for intermediate calc before validation
+            const unit = parseInt(document.getElementById('unit').value) || 0;
             const discount = parseFloat(document.getElementById('discount').value) || 0;
             const vatRate = parseFloat(document.getElementById('vat').value) || 0;
 
@@ -824,8 +824,8 @@
             const alternateSupplierName = document.getElementById('alternateSupplierName').value.trim();
             const costInput = document.getElementById('cost').value;
             const unitInput = document.getElementById('unit').value;
-            const discount = parseFloat(document.getElementById('discount').value); // Defaulted to 0 in calculateTotal if empty
-            const vat = document.getElementById('vat').value; // Defaulted to 0 in calculateTotal if empty
+            const discount = parseFloat(document.getElementById('discount').value);
+            const vat = document.getElementById('vat').value;
             const unitPrice = document.getElementById('unitPrice').value;
             const casePrice = document.getElementById('casePrice').value;
             const type = document.getElementById('type').value;
@@ -862,7 +862,7 @@
                 }
             }
 
-            if (!unitPrice || !casePrice) { // Ensure calculations were successful
+            if (!unitPrice || !casePrice) {
                 displayMessage('Please ensure all price calculations are complete.', true);
                 isValid = false;
             }
@@ -878,7 +878,7 @@
                 code: code,
                 name: name,
                 supplier: alternateSupplierCheck && alternateSupplierName ? alternateSupplierName : supplierName,
-                units: unit, // Use parsed unit
+                units: unit,
                 discount: isNaN(discount) ? 0 : discount,
                 vat: vat,
                 piece: unitPrice,
@@ -957,7 +957,6 @@
 
         async function clearAll() {
              if (confirm("Are you sure you want to clear all entries from the local list?")) {
-                // This primarily clears local. Firebase clearing is more complex and depends on sync strategy.
                 clearEntriesFromLocalStorage();
                 entries = [];
                 updateEntriesTable();
@@ -1019,36 +1018,34 @@
             console.log("exportToJPG function started");
 
             const table = document.getElementById('entriesTable');
-            // const hiddenCanvas = document.getElementById('hiddenCanvas'); // Declared in HTML
 
             if (entries.length === 0) {
                 displayMessage('No entries to export as JPG.', true);
                 return;
             }
 
-            // Temporarily adjust styles for rendering as in the original version provided
             const originalStyles = {};
             const tds = table.querySelectorAll('td');
             tds.forEach(td => {
-                originalStyles[td] = { // Using td element as key
+                originalStyles[td] = {
                     whiteSpace: td.style.whiteSpace,
                     wordBreak: td.style.wordBreak,
                     textOverflow: td.style.textOverflow
                 };
-                td.style.whiteSpace = 'nowrap'; // Force single line
-                td.style.wordBreak = 'normal';   // Prevent word breaks
-                td.style.textOverflow = 'clip'; // Show full text
+                td.style.whiteSpace = 'nowrap';
+                td.style.wordBreak = 'normal';
+                td.style.textOverflow = 'clip';
             });
             console.log("Before html2canvas call");
 
             html2canvas(table, {
                 scale: 2,
                 useCORS: true,
-                logging: true,
-                scrollY: window.scrollY * -1, // Original option
-                scrollX: 0,                   // Original option
-                windowWidth: document.body.scrollWidth,  // Original option
-                windowHeight: document.body.scrollHeight // Original option
+                logging: true, // Keep logging true to see if warnings change/disappear
+                scrollY: window.scrollY * -1,
+                scrollX: 0,
+                windowWidth: document.body.scrollWidth,
+                windowHeight: document.body.scrollHeight
             }).then(canvas => {
                 console.log("html2canvas .then block executed");
                 try {
@@ -1066,7 +1063,6 @@
                 }
             }).finally(() => {
                 console.log("html2canvas .finally block executed");
-                // Restore original styles after rendering
                 tds.forEach(td => {
                     if (originalStyles[td]) {
                         td.style.whiteSpace = originalStyles[td].whiteSpace;
@@ -1081,13 +1077,6 @@
             });
             console.log("exportToJPG function finished (after html2canvas call)");
         }
-
-        // Firebase related functions (largely for potential future use, as current focus is local)
-        // async function uploadEntriesToFirebase() { ... }
-        // async function loadEntriesFromFirebase() { ... }
-        // async function clearFirebaseCollection(collectionName) { ... }
-
     </script>
 </body>
-
 </html>
