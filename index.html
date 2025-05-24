@@ -4,62 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Entry App</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-         body { font-family: 'Roboto', sans-serif; margin: 10px; background-color: #f8f9fa; color: #343a40; }
-        h1 { text-align: center; margin-bottom: 20px; color: #007bff; }
-        .container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .left-pane { flex: 1; min-width: 300px; max-width: 550px; display: flex; flex-direction: column; padding: 20px; border: 1px solid #dee2e6; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background-color: #fff; }
-       .list-box-container { border: 1px solid #ced4da; height: 200px; overflow-y: auto; margin-bottom: 10px; border-radius: 4px; }
-        .list-box { list-style-type: none; padding: 0; margin: 0; }
-        .list-box li { padding: 10px; cursor: pointer; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-bottom:1px solid #eee; border-radius: 4px; }
-         .list-box li:hover { background-color: #e9ecef; }
-        .list-box li span { display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-right:1px solid #eee}
-         .list-box li span:last-child{border:none;}
-        .input-row { display: flex; gap: 10px; margin-bottom: 10px; align-items:center; }
-        .input-row label { width: 120px; text-align:right; color:#495057; font-size:0.9em; } /* Adjusted label size */
-         .input-row input, .input-row select { flex: 1; min-width: 80px; padding:10px; border: 1px solid #ced4da; border-radius: 4px;} /* Adjusted padding */
-         .input-row input[type="text"], .input-row input[type="number"], .input-row select {flex: 0.8;}
-       .input-row input[type="text"].cost-input, .input-row input[type="number"].cost-input {flex: 0.4; min-width:50px}
-         .uneditable-input-container {display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
-        .uneditable-input { background-color: #f0f0f0; border: 1px solid #ced4da; padding: 10px; flex:1; min-width:100px; border-radius: 4px; }
-        .uneditable-label { font-weight: bold; display: block; margin-bottom: 5px; color: #495057;}
-        .right-pane { flex: 1; min-width: 300px; max-width: 800px; display: flex; flex-direction: column; padding: 20px; border: 1px solid #dee2e6; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background-color: #fff; }
-       table { border-collapse: collapse; width: 100%; }
-       table, th, td { border: 1px solid #ced4da; padding: 10px; text-align: left; white-space: nowrap; }
-        th { background-color: #e9ecef; }
-       input, button, select { margin-bottom: 10px; padding: 10px; border: 1px solid #ced4da; border-radius: 4px;}
-       input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
-        button { cursor: pointer; background-color: #007bff; color: #fff; border: 1px solid #007bff; border-radius: 4px; transition: background-color 0.3s ease;}
-         button:hover { background-color: #0056b3; border-color: #0056b3; }
-        .homepage-buttons { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
-        .homepage-buttons button { padding: 15px 20px; font-size:1.1em; }
-         @media (max-width: 600px) {
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 10px;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 15px; /* Reduced margin */
+            color: #007bff;
+            font-size: 1.8em;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .left-pane, .right-pane {
+            flex: 1;
+            min-width: 280px; /* Slightly reduced min-width */
+            padding: 15px; /* Reduced padding */
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Softened shadow */
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        .list-box-container {
+            border: 1px solid #ced4da;
+            height: 180px; /* Reduced height */
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .list-box {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .list-box li {
+            padding: 8px; /* Reduced padding */
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); /* More responsive columns */
+            border-bottom:1px solid #eee;
+            font-size: 0.9em; /* Slightly smaller font */
+        }
+        .list-box li:hover { background-color: #e9ecef; }
+        .list-box li span {
+            display:inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 5px; /* Added padding for separation */
+            border-right:1px solid #eee;
+        }
+        .list-box li span:last-child{border:none;}
+
+        .input-row {
+            display: flex;
+            gap: 8px; /* Reduced gap */
+            margin-bottom: 8px; /* Reduced margin */
+            align-items:center;
+        }
+        .input-row label {
+            width: 110px; /* Adjusted width */
+            text-align:right;
+            color:#495057;
+            font-size:0.85em; /* Slightly smaller font */
+            flex-shrink: 0; /* Prevent label from shrinking too much */
+        }
+        .input-row input, .input-row select {
+            flex: 1;
+            min-width: 70px; /* Adjusted min-width */
+            padding: 8px; /* Reduced padding */
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .input-row input.cost-input { /* Simplified selector */
+            flex-grow: 0.5; /* Allow specific inputs to be smaller */
+        }
+        .uneditable-input-container {
+            display:flex;
+            gap:8px;
+            margin-bottom:8px;
+            flex-wrap:wrap;
+        }
+        .uneditable-input {
+            background-color: #f0f0f0;
+            border: 1px solid #ced4da;
+            padding: 8px; /* Reduced padding */
+            flex:1;
+            min-width:90px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .uneditable-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 3px; /* Reduced margin */
+            color: #495057;
+            font-size: 0.8em; /* Smaller label */
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.85em; /* Smaller table font */
+        }
+        table, th, td {
+            border: 1px solid #ced4da;
+            padding: 6px; /* Reduced padding */
+            text-align: left;
+            white-space: nowrap;
+        }
+        th { background-color: #e9ecef; font-weight: 600; } /* Bolder header */
+
+        button {
+            padding: 8px 12px; /* Reduced padding */
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 0.9em; /* Smaller font */
+            display: inline-flex; /* For icon alignment */
+            align-items: center;
+            gap: 6px; /* Space between icon and text */
+            justify-content: center; /* Center content if button becomes full-width */
+            margin-bottom: 8px; /* Consistent margin */
+        }
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0050a0;
+        }
+        button i { /* Icon style */
+            font-size: 1em; /* Adjust icon size relative to button font */
+        }
+        input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
+
+        .homepage-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Reduced gap */
+            margin-bottom: 15px;
+        }
+        .homepage-buttons button {
+            padding: 12px 18px; /* Adjusted padding */
+            font-size:1em;
+        }
+        .right-pane .action-buttons { /* Container for right-pane buttons */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .right-pane .action-buttons button {
+            flex-grow: 1; /* Allow buttons to grow */
+            min-width: 120px; /* Minimum width for better tap targets */
+        }
+
+
+        @media (max-width: 768px) { /* Adjusted breakpoint for tablets/larger phones */
+            .list-box li {
+                 grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Even more responsive on smaller */
+            }
+        }
+
+        @media (max-width: 600px) {
+            body { margin: 5px; }
+            h1 { font-size: 1.5em; margin-bottom: 10px;}
             .container { flex-direction: column; align-items: center; }
-            .left-pane, .right-pane { width: 95%; max-width: none; }
-            .list-box li span {font-size:0.9em;}
-           .uneditable-input, .uneditable-label {font-size:0.9em; }
-            input, button, select {font-size:0.9em; padding:8px} /* Adjusted padding */
-            table th, table td {padding:5px; font-size:0.8em;}
-            .input-row {flex-direction:column; align-items:flex-start;}
-            .input-row label { width: auto; text-align:left; margin-bottom: 3px;}
-             .uneditable-input-container{flex-direction:column; }
+            .left-pane, .right-pane { width: 95%; max-width: none; padding: 10px; }
+            .list-box-container { height: 150px; }
+            .list-box li span {font-size:0.8em;}
+            .uneditable-input, .uneditable-label {font-size:0.85em; }
+            .input-row {flex-direction:column; align-items:stretch; gap: 5px;} /* Stretch inputs */
+            .input-row label { width: auto; text-align:right; margin-bottom: 2px;}
+            .input-row input, .input-row select { padding:8px; font-size:0.9em; width: 100%; box-sizing: border-box;}
+            .uneditable-input-container{flex-direction:column; gap: 5px;}
+            table th, table td {padding:4px; font-size:0.75em;}
+            button { padding: 8px 10px; font-size: 0.85em; }
+            button i { font-size: 0.9em; }
+            .homepage-buttons button { padding: 10px 15px; font-size:0.9em; }
+            .left-pane > button:last-of-type, /* Save button in left pane */
+            .left-pane button#addNewItemButton {
+                width: 100%; /* Full width for primary action */
+                padding: 10px;
+                font-size: 1em;
+            }
+             .right-pane .action-buttons button {
+                min-width: 100px; /* Adjust for smaller screens */
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Data Entry</h1>
+    <h1><i class="fas fa-database"></i> Data Entry</h1>
      <div id="homepage" class="homepage-buttons">
-        <button onclick="showEditPricesForm()">تعديل أسعار</button>
-        <button onclick="showAddItemForm()">إضافة صنف جديد</button>
+        <button onclick="showEditPricesForm()"><i class="fas fa-tags"></i> تعديل أسعار</button>
+        <button onclick="showAddItemForm()"><i class="fas fa-plus-circle"></i> إضافة صنف جديد</button>
     </div>
 
     <div id="editPricesForm" class="container" style="display: none;">
         <div class="left-pane">
-           <button onclick="showHomepage()">الرئيسية</button>
-            <input type="text" id="searchInput" placeholder="بحث..." />
+           <button onclick="showHomepage()"><i class="fas fa-home"></i> الرئيسية</button>
+            <input type="text" id="searchInput" placeholder="بحث..." style="margin-bottom: 8px; padding: 8px;"/>
              <div class="list-box-container">
                 <ul id="itemList" class="list-box">
-                     <li style="font-weight: bold; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
+                     <li style="font-weight: bold; background-color: #f0f0f0;">
                        <span>الكود</span>
                         <span>كود PLU</span>
                         <span>الاسم</span>
@@ -82,7 +242,7 @@
                     <span id="statusDisplay"></span>
                 </div>
             </div>
-            <div class="uneditable-input" style="margin-bottom:10px"> <!-- Reduced margin -->
+            <div class="uneditable-input" style="margin-bottom:10px">
                  <span class="uneditable-label">الاسم:</span>
                    <span id="nameDisplay"></span>
             </div>
@@ -109,37 +269,31 @@
              </div>
             <div class="input-row">
                  <label for="newStatusInput">الحالة الجديدة:</label>
-                <select id="newStatusInput" style="flex:1">
-                   <option value="" disabled selected>اختر حالة (اختياري)</option>
+                <select id="newStatusInput">
+                   <option value="" disabled selected>اختر حالة</option>
                      <option value="جاري">جاري</option>
                     <option value="موقوف">موقوف</option>
                  </select>
-               <label for="expiryInput" style="margin-left: 10px;">صلاحية (يوم):</label>
-                <input type="number" id="expiryInput" style="flex:1" />
+               <label for="expiryInput">صلاحية (يوم):</label>
+                <input type="number" id="expiryInput" />
             </div>
 
-           <button id="addButton">حفظ</button>
+           <button id="addButton"><i class="fas fa-save"></i> حفظ التعديلات</button>
         </div>
 
         <div class="right-pane">
-            <button id="clearFieldsButton">مسح الحقول</button>
-            <button id="extractButton">استخراج إلى Excel</button>
-            <button id="saveImageButton">حفظ كصورة</button>
-            <button id="clearTableButton">مسح الجدول</button>
+            <div class="action-buttons">
+                <button id="clearFieldsButton"><i class="fas fa-eraser"></i> مسح الحقول</button>
+                <button id="extractButton"><i class="fas fa-file-excel"></i> Excel</button>
+                <button id="saveImageButton"><i class="fas fa-file-image"></i> صورة</button>
+                <button id="clearTableButton"><i class="fas fa-trash-alt"></i> مسح الجدول</button>
+            </div>
              <table id="dataTable">
                 <thead>
                     <tr>
-                       <th>الكود</th>
-                        <th>كود PLU</th>
-                       <th>الاسم</th>
-                       <th>الحالة الأصلية</th>
-                        <th>التكلفة</th>
-                       <th>القاهرة</th>
-                        <th>الساحل</th>
-                       <th>المورد</th>
-                        <th>الحالة الجديدة</th>
-                        <th>صلاحية</th>
-                        <th>حذف</th>
+                       <th>الكود</th> <th>كود PLU</th> <th>الاسم</th> <th>الحالة الأصلية</th>
+                       <th>التكلفة</th> <th>القاهرة</th> <th>الساحل</th> <th>المورد</th>
+                       <th>الحالة الجديدة</th> <th>صلاحية</th> <th><i class="fas fa-trash"></i></th>
                     </tr>
                 </thead>
                <tbody id="dataTableBody"></tbody>
@@ -150,8 +304,8 @@
 
     <div id="addItemForm" class="container" style="display: none;">
         <div class="left-pane">
-             <button onclick="showHomepage()">الرئيسية</button>
-             <h2>إضافة صنف جديد</h2>
+             <button onclick="showHomepage()"><i class="fas fa-home"></i> الرئيسية</button>
+             <h2 style="text-align:center; font-size: 1.3em; margin-bottom: 10px;"><i class="fas fa-plus-square"></i> إضافة صنف جديد</h2>
            <div class="input-row">
                  <label for="newItemName">الاسم:</label>
                 <input type="text" id="newItemName" />
@@ -184,24 +338,21 @@
                 <input type="number" id="newItemExpiry"  />
            </div>
 
-            <button id="addNewItemButton">حفظ</button>
+            <button id="addNewItemButton"><i class="fas fa-plus-circle"></i> إضافة الصنف</button>
         </div>
 
         <div class="right-pane">
-           <button id="clearFieldsButtonNewItem">مسح الحقول</button>
-            <button id="extractButtonNewItem">استخراج إلى Excel</button>
-             <button id="saveImageButtonNewItem">حفظ كصورة</button>
-           <button id="clearTableButtonNewItem">مسح الجدول</button>
+            <div class="action-buttons">
+                <button id="clearFieldsButtonNewItem"><i class="fas fa-eraser"></i> مسح الحقول</button>
+                <button id="extractButtonNewItem"><i class="fas fa-file-excel"></i> Excel</button>
+                <button id="saveImageButtonNewItem"><i class="fas fa-file-image"></i> صورة</button>
+                <button id="clearTableButtonNewItem"><i class="fas fa-trash-alt"></i> مسح الجدول</button>
+            </div>
             <table id="dataTableNewItem">
                 <thead>
                     <tr>
-                        <th>الاسم</th>
-                        <th>التكلفة</th>
-                        <th>القاهرة</th>
-                        <th>الساحل</th>
-                         <th>المورد</th>
-                       <th>صلاحية</th>
-                        <th>حذف</th>
+                        <th>الاسم</th> <th>التكلفة</th> <th>القاهرة</th> <th>الساحل</th>
+                        <th>المورد</th> <th>صلاحية</th> <th><i class="fas fa-trash"></i></th>
                     </tr>
                 </thead>
                 <tbody id="dataTableBodyNewItem"></tbody>
@@ -220,8 +371,8 @@
         const costInput = document.getElementById('costInput');
         const cairoMarginInput = document.getElementById('cairoMarginInput');
         const coastMarginInput = document.getElementById('coastMarginInput');
-        const cairoCostInput = document.getElementById('cairoCostInput'); // Readonly
-        const sahelCostInput = document.getElementById('sahelCostInput'); // Readonly
+        const cairoCostInput = document.getElementById('cairoCostInput');
+        const sahelCostInput = document.getElementById('sahelCostInput');
         const supplierInput = document.getElementById('supplierInput');
         const newStatusInput = document.getElementById('newStatusInput');
         const expiryInput = document.getElementById('expiryInput');
@@ -245,8 +396,8 @@
         const newItemCostInput = document.getElementById('newItemCost');
         const newItemCairoMarginInput = document.getElementById('newItemCairoMargin');
         const newItemCoastMarginInput = document.getElementById('newItemCoastMargin');
-        const newItemCairoCostInput = document.getElementById('newItemCairoCost'); // Readonly
-        const newItemSahelCostInput = document.getElementById('newItemSahelCost'); // Readonly
+        const newItemCairoCostInput = document.getElementById('newItemCairoCost');
+        const newItemSahelCostInput = document.getElementById('newItemSahelCost');
         const newItemSupplierInput = document.getElementById('newItemSupplier');
         const newItemExpiryInput = document.getElementById('newItemExpiry');
         const addNewItemButton = document.getElementById('addNewItemButton');
@@ -257,7 +408,7 @@
         const dataTableBodyNewItem = document.getElementById('dataTableBodyNewItem');
         const clearTableButtonNewItem = document.getElementById('clearTableButtonNewItem');
 
-        const googleSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgnhSwtgtBcma96Oyg5-bWRhl_x3qu5N6DEucDQQO6MlsTsDgPteZ8qe87iK9D6w/pub?output=csv';
+        const googleSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrRFFRPe_jrOrDZM58gRqxfsA0deD60_q2jkA7XJRRfJQ7IiBdIqNDN7JdMawjw/pub?output=csv';
 
         async function fetchDataFromGoogleSheet() {
             console.log("Fetching data from Google Sheet...");
@@ -272,8 +423,8 @@
                 console.log("Data fetched and parsed successfully.");
             } catch (error) {
                 console.error("Could not fetch or parse data from Google Sheet:", error);
-                alert("حدث خطأ أثناء تحميل البيانات من جدول جوجل. يرجى المحاولة مرة أخرى لاحقًا أو التأكد من الرابط.");
-                itemList.innerHTML = '<li>فشل تحميل البيانات.</li>';
+                alert("حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى.");
+                itemList.innerHTML = '<li><i class="fas fa-exclamation-triangle"></i> فشل تحميل البيانات.</li>';
             }
         }
 
@@ -286,7 +437,7 @@
             }
 
             const rawHeaders = rows[0].split(',');
-            const headers = rawHeaders.map(header => header.trim().toLowerCase()); // Normalize headers
+            const headers = rawHeaders.map(header => header.trim().toLowerCase()); 
 
             const codeIndex = headers.indexOf('code');
             const barcodeIndex = headers.indexOf('barcode');
@@ -297,8 +448,8 @@
             const coastMarginIndex = headers.indexOf('coast margin');
 
             if ([codeIndex, barcodeIndex, pluIndex, nameIndex, statusIndex, cairoMarginIndex, coastMarginIndex].some(index => index === -1)) {
-                console.error("One or more required columns (code, barcode, plu, name, status, cairo margin, coast margin) not found in CSV headers. Found:", rawHeaders.join(', '));
-                alert("أعمدة البيانات المطلوبة غير موجودة في الملف. تأكد من أن الملف يحتوي على الأعمدة الصحيحة بالترتيب المتوقع.");
+                console.error("Required columns (code, barcode, plu, name, status, cairo margin, coast margin) not found. Headers found:", rawHeaders.join(', '));
+                alert("أعمدة البيانات المطلوبة غير موجودة في الملف. تأكد من صحة الأعمدة.");
                 database = [];
                 return;
             }
@@ -311,7 +462,7 @@
                     return {
                         code: values[codeIndex]?.trim() || '',
                         barcode: values[barcodeIndex]?.trim() || '',
-                        pluCode: values[pluIndex]?.trim() || '', // Using 'plu' for pluCode display
+                        pluCode: values[pluIndex]?.trim() || '', 
                         name: values[nameIndex]?.trim() || '',
                         status: values[statusIndex]?.trim() || '',
                         cairoMargin: !isNaN(cairoMargin) ? cairoMargin : 0,
@@ -327,48 +478,31 @@
             return num.toFixed(3);
         }
 
+        function calculatePrice(cost, margin) {
+            if (!isNaN(cost) && cost > 0 && !isNaN(margin) && margin >= 0 && margin < 100) {
+                return cost / (1 - (margin / 100));
+            }
+            return 0;
+        }
+        
         function updateCalculatedPrices() {
             const cost = parseFloat(costInput.value);
             const cairoMargin = parseFloat(cairoMarginInput.value);
             const coastMargin = parseFloat(coastMarginInput.value);
 
-            let cairoPrice = 0;
-            let sahelPrice = 0;
-
-            if (!isNaN(cost) && cost > 0) {
-                if (!isNaN(cairoMargin) && cairoMargin >= 0 && cairoMargin < 100) {
-                    cairoPrice = cost / (1 - (cairoMargin / 100));
-                }
-                if (!isNaN(coastMargin) && coastMargin >= 0 && coastMargin < 100) {
-                    sahelPrice = cost / (1 - (coastMargin / 100));
-                }
-            }
-            cairoCostInput.value = cairoPrice.toFixed(3);
-            sahelCostInput.value = sahelPrice.toFixed(3);
+            cairoCostInput.value = calculatePrice(cost, cairoMargin).toFixed(3);
+            sahelCostInput.value = calculatePrice(cost, coastMargin).toFixed(3);
         }
 
         function updateCalculatedNewItemPrices() {
             const cost = parseFloat(newItemCostInput.value);
             const cairoMargin = parseFloat(newItemCairoMarginInput.value);
             const coastMargin = parseFloat(newItemCoastMarginInput.value);
-
-            let cairoPrice = 0;
-            let sahelPrice = 0;
-
-            if (!isNaN(cost) && cost > 0) {
-                if (!isNaN(cairoMargin) && cairoMargin >= 0 && cairoMargin < 100) {
-                    cairoPrice = cost / (1 - (cairoMargin / 100));
-                }
-                if (!isNaN(coastMargin) && coastMargin >= 0 && coastMargin < 100) {
-                    sahelPrice = cost / (1 - (coastMargin / 100));
-                }
-            }
-            newItemCairoCostInput.value = cairoPrice.toFixed(3);
-            newItemSahelCostInput.value = sahelPrice.toFixed(3);
+            
+            newItemCairoCostInput.value = calculatePrice(cost, cairoMargin).toFixed(3);
+            newItemSahelCostInput.value = calculatePrice(cost, coastMargin).toFixed(3);
         }
 
-
-        // Event Listeners for Edit Prices Form
         costInput.addEventListener('input', updateCalculatedPrices);
         cairoMarginInput.addEventListener('input', updateCalculatedPrices);
         coastMarginInput.addEventListener('input', updateCalculatedPrices);
@@ -379,7 +513,6 @@
         saveImageButton.addEventListener('click', saveTableAsImage);
         clearTableButton.addEventListener('click', clearTable);
 
-        // Event Listeners for Add New Item Form
         newItemCostInput.addEventListener('input', updateCalculatedNewItemPrices);
         newItemCairoMarginInput.addEventListener('input', updateCalculatedNewItemPrices);
         newItemCoastMarginInput.addEventListener('input', updateCalculatedNewItemPrices);
@@ -388,7 +521,6 @@
         extractButtonNewItem.addEventListener('click', extractToExcelNewItem);
         saveImageButtonNewItem.addEventListener('click', saveTableAsImageNewItem);
         clearTableButtonNewItem.addEventListener('click', clearTableNewItem);
-
 
         function showHomepage(){
             editPricesForm.style.display = 'none';
@@ -413,16 +545,21 @@
         }
 
         function updateList() {
-             itemList.innerHTML = `
-                <li style="font-weight: bold; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
-                    <span>الكود</span>
-                    <span>كود PLU</span>
-                    <span>الاسم</span>
-                     <span>الحالة</span>
-                </li>
-            `;
+             const listHeader = itemList.querySelector('li:first-child');
+             itemList.innerHTML = '';
+             if(listHeader) itemList.appendChild(listHeader); // Re-add header
+             else { // Fallback if header was somehow lost
+                 const newHeader = document.createElement('li');
+                 newHeader.style.fontWeight = 'bold';
+                 newHeader.style.backgroundColor = '#f0f0f0';
+                 newHeader.innerHTML = `<span>الكود</span><span>كود PLU</span><span>الاسم</span><span>الحالة</span>`;
+                 itemList.appendChild(newHeader);
+             }
+
             if (!database || database.length === 0) {
-                 itemList.innerHTML += '<li>لا توجد بيانات لعرضها.</li>';
+                 const noDataItem = document.createElement('li');
+                 noDataItem.innerHTML = `<span><i class="fas fa-info-circle"></i></span><span colspan="3">لا توجد بيانات لعرضها.</span>`;
+                 itemList.appendChild(noDataItem);
                  return;
             }
             database.forEach(item => {
@@ -434,16 +571,22 @@
                     <span title="${item.status}">${item.status || 'N/A'}</span>
                `;
                 listItem.addEventListener('click', function() {
+                    document.querySelectorAll('.list-box li.selected').forEach(li => li.classList.remove('selected'));
+                    listItem.classList.add('selected');
+
                     selectedItem = item;
                     codeDisplay.textContent = item.code || '';
-                    pluCodeDisplay.textContent = item.pluCode || ''; // This is item.plu from CSV
+                    pluCodeDisplay.textContent = item.pluCode || '';
                     nameDisplay.textContent = item.name || '';
                     statusDisplay.textContent = item.status || '';
                     
-                    costInput.value = ''; // Clear previous cost
+                    costInput.value = ''; 
                     cairoMarginInput.value = item.cairoMargin !== undefined ? item.cairoMargin.toFixed(3) : '0.000';
                     coastMarginInput.value = item.coastMargin !== undefined ? item.coastMargin.toFixed(3) : '0.000';
-                    updateCalculatedPrices(); // Update calculated fields based on new margins (cost is 0 for now)
+                    newStatusInput.value = ""; // Reset status dropdown
+                    expiryInput.value = "";
+                    supplierInput.value = "";
+                    updateCalculatedPrices(); 
                 });
                 itemList.appendChild(listItem);
             });
@@ -451,16 +594,15 @@
 
        function filterList() {
             const searchTerm = searchInput.value.toLowerCase();
-            itemList.innerHTML = `
-                 <li style="font-weight: bold; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">
-                     <span>الكود</span>
-                     <span>كود PLU</span>
-                    <span>الاسم</span>
-                    <span>الحالة</span>
-                </li>
-            `;
+            const listHeader = itemList.querySelector('li:first-child');
+            itemList.innerHTML = '';
+            if(listHeader) itemList.appendChild(listHeader);
+
+
             if (!database || database.length === 0) {
-                 itemList.innerHTML += '<li>لا توجد بيانات للبحث فيها.</li>';
+                 const noDataItem = document.createElement('li');
+                 noDataItem.innerHTML = `<span><i class="fas fa-info-circle"></i></span><span colspan="3">لا توجد بيانات للبحث فيها.</span>`;
+                 itemList.appendChild(noDataItem);
                  return;
             }
            const filteredList = database.filter(item => {
@@ -469,7 +611,9 @@
                 );
             });
             if (filteredList.length === 0) {
-                itemList.innerHTML += '<li>لا توجد نتائج مطابقة للبحث.</li>';
+                 const noResultsItem = document.createElement('li');
+                 noResultsItem.innerHTML = `<span><i class="fas fa-search"></i></span><span colspan="3">لا توجد نتائج مطابقة.</span>`;
+                 itemList.appendChild(noResultsItem);
             } else {
                 filteredList.forEach(item => {
                     const listItem = document.createElement('li');
@@ -480,15 +624,21 @@
                         <span title="${item.status}">${item.status || 'N/A'}</span>
                     `;
                     listItem.addEventListener('click', function() {
+                        document.querySelectorAll('.list-box li.selected').forEach(li => li.classList.remove('selected'));
+                        listItem.classList.add('selected');
+
                         selectedItem = item;
                         codeDisplay.textContent = item.code || '';
                         pluCodeDisplay.textContent = item.pluCode || '';
                         nameDisplay.textContent = item.name || '';
                         statusDisplay.textContent = item.status || '';
 
-                        costInput.value = ''; // Clear previous cost
+                        costInput.value = ''; 
                         cairoMarginInput.value = item.cairoMargin !== undefined ? item.cairoMargin.toFixed(3) : '0.000';
                         coastMarginInput.value = item.coastMargin !== undefined ? item.coastMargin.toFixed(3) : '0.000';
+                        newStatusInput.value = "";
+                        expiryInput.value = "";
+                        supplierInput.value = "";
                         updateCalculatedPrices();
                     });
                    itemList.appendChild(listItem);
@@ -508,10 +658,10 @@
             }
 
             const supplier = supplierInput.value;
-            const newStatus = newStatusInput.value;
+            const newStatusVal = newStatusInput.value;
             const expiry = expiryInput.value;
 
-             if(expiry && (isNaN(expiry) || expiry < 0)){
+             if(expiry && (isNaN(parseFloat(expiry)) || parseFloat(expiry) < 0)){
                 alert("الرجاء إدخال عدد أيام صلاحية صحيح.");
                  return;
              }
@@ -522,18 +672,21 @@
             newRow.insertCell().textContent = selectedItem.name || 'N/A';
             newRow.insertCell().textContent = selectedItem.status || 'N/A'; 
             newRow.insertCell().textContent = formatToThreeDecimals(costInput.value);
-            newRow.insertCell().textContent = formatToThreeDecimals(cairoCostInput.value); // Already calculated
-            newRow.insertCell().textContent = formatToThreeDecimals(sahelCostInput.value); // Already calculated
+            newRow.insertCell().textContent = formatToThreeDecimals(cairoCostInput.value);
+            newRow.insertCell().textContent = formatToThreeDecimals(sahelCostInput.value);
             newRow.insertCell().textContent = supplier;
-            newRow.insertCell().textContent = newStatus || (selectedItem.status || 'N/A'); 
+            newRow.insertCell().textContent = newStatusVal || (selectedItem.status || 'N/A'); 
             newRow.insertCell().textContent = expiry || '';
+            
+            const deleteCell = newRow.insertCell();
             const deleteButton = document.createElement('button');
-             deleteButton.textContent = 'حذف';
-            deleteButton.addEventListener('click', function() {
-                 dataTableBody.deleteRow(newRow.rowIndex - 1);
-            });
-            newRow.insertCell().appendChild(deleteButton);
+            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteButton.style.padding = "4px 8px"; // Smaller padding for in-table button
+            deleteButton.onclick = function() { dataTableBody.deleteRow(newRow.rowIndex - 1); };
+            deleteCell.appendChild(deleteButton);
+
             selectedItem = null;
+            document.querySelectorAll('.list-box li.selected').forEach(li => li.classList.remove('selected'));
             clearInputsAndCalculated();
        }
 
@@ -545,13 +698,12 @@
             costInput.value = '';
             cairoMarginInput.value = '';
             coastMarginInput.value = '';
-            // cairoCostInput.value = '0.000'; // Will be cleared by updateCalculatedPrices
-            // sahelCostInput.value = '0.000'; // Will be cleared by updateCalculatedPrices
             supplierInput.value = '';
             newStatusInput.value = '';
             expiryInput.value = '';
             selectedItem = null;
-            updateCalculatedPrices(); // This will set calculated fields to 0.000 if cost/margins are empty
+            document.querySelectorAll('.list-box li.selected').forEach(li => li.classList.remove('selected'));
+            updateCalculatedPrices(); 
        }
 
         function clearAll() { 
@@ -564,27 +716,26 @@
              const rows = dataTableBody.querySelectorAll('tr');
            rows.forEach(row => {
                 const cells = Array.from(row.querySelectorAll('td'));
-                const rowData = cells.slice(0, -1).map(cell => cell.textContent);
+                const rowData = cells.slice(0, -1).map(cell => cell.textContent); // Exclude delete button cell
                  data.push(rowData);
            });
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
             XLSX.utils.book_append_sheet(wb, ws, 'Data');
-             XLSX.writeFile(wb, 'table_data.xlsx'); 
+             XLSX.writeFile(wb, 'table_data_edit_prices.xlsx'); 
         }
 
          function saveTableAsImage() {
-            html2canvas(dataTable, {scale: 3}).then(canvas => {
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            html2canvas(dataTable, {scale: 2, useCORS: true}).then(canvas => { // Slightly reduced scale if 3 is too much
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
                const downloadLink = document.createElement('a');
                 downloadLink.href = imgData;
-                downloadLink.download = 'table_data.jpg';
+                downloadLink.download = 'table_data_edit_prices.jpg';
                  document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
             }).catch(err => {
                 console.error("Error generating image: ", err);
-                alert("خطأ في إنشاء الصورة. تحقق من وحدة التحكم لمزيد من التفاصيل.");
             });
         }
 
@@ -592,7 +743,7 @@
            const name = newItemNameInput.value;
            const costVal = parseFloat(newItemCostInput.value);
 
-            if (!name) {
+            if (!name.trim()) {
                 alert("الرجاء إدخال اسم الصنف.");
                 return;
             }
@@ -603,7 +754,7 @@
 
            const supplier = newItemSupplierInput.value;
            const expiry = newItemExpiryInput.value;
-            if(expiry && (isNaN(expiry) || expiry < 0)){
+            if(expiry && (isNaN(parseFloat(expiry)) || parseFloat(expiry) < 0)){
                  alert("الرجاء إدخال عدد أيام صلاحية صحيح.");
                  return;
              }
@@ -611,16 +762,18 @@
            const newRow = dataTableBodyNewItem.insertRow();
            newRow.insertCell().textContent = name;
             newRow.insertCell().textContent = formatToThreeDecimals(newItemCostInput.value);
-            newRow.insertCell().textContent = formatToThreeDecimals(newItemCairoCostInput.value); // Already calculated
-            newRow.insertCell().textContent = formatToThreeDecimals(newItemSahelCostInput.value); // Already calculated
+            newRow.insertCell().textContent = formatToThreeDecimals(newItemCairoCostInput.value); 
+            newRow.insertCell().textContent = formatToThreeDecimals(newItemSahelCostInput.value); 
             newRow.insertCell().textContent = supplier;
             newRow.insertCell().textContent = expiry || '';
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'حذف';
-            deleteButton.addEventListener('click', function() {
-                dataTableBodyNewItem.deleteRow(newRow.rowIndex - 1);
-           });
-            newRow.insertCell().appendChild(deleteButton);
+            
+            const deleteCellNew = newRow.insertCell();
+            const deleteButtonNew = document.createElement('button');
+            deleteButtonNew.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteButtonNew.style.padding = "4px 8px";
+            deleteButtonNew.onclick = function() { dataTableBodyNewItem.deleteRow(newRow.rowIndex - 1); };
+            deleteCellNew.appendChild(deleteButtonNew);
+
             clearInputsNewItemAndCalculated();
         }
 
@@ -629,11 +782,9 @@
             newItemCostInput.value = '';
             newItemCairoMarginInput.value = '';
             newItemCoastMarginInput.value = '';
-            // newItemCairoCostInput.value = '0.000'; // Will be cleared by updateCalculatedNewItemPrices
-            // newItemSahelCostInput.value = '0.000'; // Will be cleared by updateCalculatedNewItemPrices
             newItemSupplierInput.value = '';
             newItemExpiryInput.value = '';
-            updateCalculatedNewItemPrices(); // This will set calculated fields to 0.000
+            updateCalculatedNewItemPrices(); 
         }
 
         function extractToExcelNewItem() {
@@ -652,8 +803,8 @@
         }
 
          function saveTableAsImageNewItem() {
-             html2canvas(dataTableNewItem, {scale: 3}).then(canvas => {
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+             html2canvas(dataTableNewItem, {scale: 2, useCORS: true}).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
                const downloadLink = document.createElement('a');
                  downloadLink.href = imgData;
                 downloadLink.download = 'table_data_new_item.jpg';
@@ -662,7 +813,6 @@
                 document.body.removeChild(downloadLink);
             }).catch(err => {
                 console.error("Error generating image for new items: ", err);
-                alert("خطأ في إنشاء الصورة للأصناف الجديدة. تحقق من وحدة التحكم لمزيد من التفاصيل.");
             });
         }
 
@@ -673,6 +823,7 @@
           dataTableBodyNewItem.innerHTML = '';
        }
 
+       // Initial call to fetch data
        fetchDataFromGoogleSheet();
 
     </script>
